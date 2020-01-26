@@ -18,6 +18,7 @@
 		2DCD954D1E0B4F2C00145EB5 /* SmartSolesAppTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* SmartSolesAppTests.m */; };
 		643FAB7689805F3D8F366736 /* libPods-SmartSolesApp-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7B1D0827AEF5C7DD78C3960D /* libPods-SmartSolesApp-tvOSTests.a */; };
 		6D89E23678869F671231A4FD /* libPods-SmartSolesAppTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6C2A7CF1168CF050486F4132 /* libPods-SmartSolesAppTests.a */; };
+		7F9D07DF23DE3CBE00CE6AE5 /* App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F9D07DE23DE3CBE00CE6AE5 /* App.swift */; };
 		ADF435B59BA20D1549675479 /* libPods-SmartSolesApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 678C2A196F3E8822725FD59C /* libPods-SmartSolesApp.a */; };
 		DD72464EE5AAC4442BE1F45B /* libPods-SmartSolesApp-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AACF4BA8F0858546B89A4C5 /* libPods-SmartSolesApp-tvOS.a */; };
 /* End PBXBuildFile section */
@@ -60,6 +61,8 @@
 		678C2A196F3E8822725FD59C /* libPods-SmartSolesApp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-SmartSolesApp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6C2A7CF1168CF050486F4132 /* libPods-SmartSolesAppTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-SmartSolesAppTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7B1D0827AEF5C7DD78C3960D /* libPods-SmartSolesApp-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-SmartSolesApp-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		7F9D07DB23DE3B6400CE6AE5 /* SmartSolesApp-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SmartSolesApp-Bridging-Header.h"; sourceTree = "<group>"; };
+		7F9D07DE23DE3CBE00CE6AE5 /* App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
 		9B97935144ABB40FB2CB044B /* Pods-SmartSolesApp-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SmartSolesApp-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-SmartSolesApp-tvOSTests/Pods-SmartSolesApp-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
 		B05FC7F6336E633AE3F22C43 /* Pods-SmartSolesApp-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SmartSolesApp-tvOS.debug.xcconfig"; path = "Target Support Files/Pods-SmartSolesApp-tvOS/Pods-SmartSolesApp-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
 		D3F851228C71F0A7D6F2D876 /* Pods-SmartSolesApp-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SmartSolesApp-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-SmartSolesApp-tvOSTests/Pods-SmartSolesApp-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -164,6 +167,13 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
+		7E6AB247D250467BB11A765C /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
@@ -174,6 +184,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				7F9D07DE23DE3CBE00CE6AE5 /* App.swift */,
 				13B07FAE1A68108700A75B9A /* SmartSolesApp */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* SmartSolesAppTests */,
@@ -181,6 +192,7 @@
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				440F94AFA84D13BE71F30E03 /* Pods */,
 				7E6AB247D250467BB11A765C /* Resources */,
+				7F9D07DB23DE3B6400CE6AE5 /* SmartSolesApp-Bridging-Header.h */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -197,14 +209,6 @@
 			);
 			name = Products;
 			sourceTree = "<group>";
-		};
-		7E6AB247D250467BB11A765C /* Resources */ = {
-			isa = "PBXGroup";
-			children = (
-			);
-			name = Resources;
-			sourceTree = "<group>";
-			path = "";
 		};
 /* End PBXGroup section */
 
@@ -304,6 +308,7 @@
 					};
 					13B07F861A680F5B00A75B9A = {
 						DevelopmentTeam = JR9KFJF8NX;
+						LastSwiftMigration = 1130;
 					};
 					2D02E47A1E0B4A5D006451C7 = {
 						CreatedOnToolsVersion = 8.2.1;
@@ -590,6 +595,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7F9D07DF23DE3CBE00CE6AE5 /* App.swift in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 			);
@@ -644,6 +650,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = FD311FCAA46CE42437B59057 /* Pods-SmartSolesAppTests.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				DEVELOPMENT_TEAM = JR9KFJF8NX;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -668,6 +675,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 0052FDE9425C8E828AB56A8F /* Pods-SmartSolesAppTests.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
 				DEVELOPMENT_TEAM = JR9KFJF8NX;
@@ -690,6 +698,7 @@
 			baseConfigurationReference = 30C6C8AF764B088345B9FFD0 /* Pods-SmartSolesApp.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = JR9KFJF8NX;
@@ -702,6 +711,9 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = SmartSolesApp;
+				SWIFT_OBJC_BRIDGING_HEADER = "SmartSolesApp-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -711,6 +723,7 @@
 			baseConfigurationReference = 18D3EC0FF52DB62AA6DD8465 /* Pods-SmartSolesApp.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = JR9KFJF8NX;
 				INFOPLIST_FILE = SmartSolesApp/Info.plist;
@@ -722,6 +735,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = SmartSolesApp;
+				SWIFT_OBJC_BRIDGING_HEADER = "SmartSolesApp-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
