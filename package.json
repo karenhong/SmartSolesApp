@@ -13,6 +13,7 @@
     "@expo/vector-icons": "^10.0.6",
     "react": "16.9.0",
     "react-native": "0.61.5",
+    "react-native-ble-plx": "^1.1.1",
     "react-native-gesture-handler": "^1.5.3",
     "react-native-paper": "^3.4.1",
     "react-native-reanimated": "^1.7.0",
@@ -21,7 +22,7 @@
     "react-native-vector-icons": "^6.6.0",
     "react-navigation": "^4.0.10",
     "react-navigation-material-bottom-tabs": "^2.1.5",
-    "react-navigation-stack": "^2.0.15"
+    "react-navigation-stack": "^2.0.16"
   },
   "devDependencies": {
     "@babel/core": "^7.8.3",
@@ -31,10 +32,12 @@
     "babel-jest": "^24.9.0",
     "eslint": "^6.8.0",
     "jest": "^24.9.0",
+    "jetifier": "^1.6.5",
     "metro-react-native-babel-preset": "^0.58.0",
     "react-test-renderer": "16.9.0"
   },
   "jest": {
     "preset": "react-native"
-  }
+  },
+  "postinstall": "npx jetify"
 }
