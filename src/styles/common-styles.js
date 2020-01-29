@@ -7,7 +7,7 @@ import SSColors from './colors';
  * For specific style components, create a new js file in this folder and define a new stylesheet
  */
 const commonStyles = StyleSheet.create({
-  // TODO: left as example. None of these are currently used, please remove when defining your own
+  // TODO: left as example. Not all of these are currently used, please remove unused styles
   body: {
     backgroundColor: SSColors.white,
   },
@@ -16,15 +16,15 @@ const commonStyles = StyleSheet.create({
     paddingHorizontal: 24,
   },
   sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
+    fontSize: 48,
+    fontWeight: '900',
     color: SSColors.black,
   },
   sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
+    marginTop: 40,
+    fontSize: 24,
     fontWeight: '400',
-    color: SSColors.dark,
+    color: SSColors.black,
   },
   highlight: {
     fontWeight: '700',
@@ -36,6 +36,22 @@ const commonStyles = StyleSheet.create({
     padding: 4,
     paddingRight: 12,
     textAlign: 'right',
+  },
+  roundButton: {
+    borderWidth: 1,
+    borderColor: SSColors.primary,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 200,
+    height: 200,
+    backgroundColor: SSColors.primary,
+    borderRadius: 150,
+  },
+  buttonText: {
+    fontSize: 40,
+    color: 'white',
+    textAlign: 'center',
+    fontWeight: '700',
   },
 });
 
