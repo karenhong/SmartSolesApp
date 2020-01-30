@@ -3,7 +3,6 @@ import {View, Text, Platform, TouchableOpacity} from 'react-native';
 
 import DeviceManager from '../bluetooth/DeviceManager';
 import SSStyles from '../styles/common-styles';
-import SSColors from '../styles/colors';
 
 // TODO: Prompt user to give app location permissions
 
@@ -11,7 +10,7 @@ class HomePage extends React.Component {
   constructor() {
     super();
     this.manager = new DeviceManager();
-    this.state = {info: '', connected: false, values: '', balance: '...'};
+    this.state = {info: '', connected: false, values: '', balance: '..'};
   }
 
   componentDidMount() {
@@ -56,13 +55,17 @@ class HomePage extends React.Component {
             onPress={() => {
               this.assessBalance();
             }}
-            style={SSStyles.roundButton}>
+            style={
+              this.state.balance === 'being assessed'
+                ? SSStyles.disabledButton
+                : SSStyles.roundButton
+            }>
             <Text style={SSStyles.buttonText}>Assess balance</Text>
           </TouchableOpacity>
         </View>
         <View style={{flex: 1}}>
           <Text style={SSStyles.sectionDescription}>
-            Your balance is {this.state.balance}
+            Your balance is {this.state.balance}.
           </Text>
         </View>
       </View>

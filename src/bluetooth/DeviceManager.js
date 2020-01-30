@@ -1,17 +1,20 @@
 import {BleManager} from 'react-native-ble-plx';
+import {decode as atob} from 'base-64';
 
 import NetworkManager from './NetworkManager';
 import Soles from './Soles';
+import {Buffer} from 'buffer';
 
 export default class DeviceManager {
-  // Default UUID for custom service
-
   constructor() {
     this.bleManager = new BleManager();
     this.networkManger = new NetworkManager();
     this.soles = new Soles();
+
+    // Default UUID for custom service
     this.prefixUUID = '0000ff';
     this.suffixUUID = '-0000-1000-8000-00805f9b34fb';
+
     this.fsrDataLength = 3;
   }
 
@@ -53,36 +56,34 @@ export default class DeviceManager {
     const service = this.serviceUUID('e'); // TODO: Figure out where this number is coming from and if it's different for each chip
     const characteristicN = this.notifyUUID('e');
 
-    for (let device in [this.soles.left]) {
-      let device = this.soles.left;
+    this.soles.getSoles().forEach(device => {
       let fsrData = [];
       promises.push(
         new Promise((resolve, reject) => {
-          let subscription = device.monitorCharacteristicForService(
+          let sub = device.monitorCharacteristicForService(
             service,
             characteristicN,
             (error, characteristic) => {
               if (error) {
-                this.error(error.message);
-                return reject;
+                return reject(error.message);
               }
               this.info('Received notification from: ' + characteristic.uuid);
               fsrData.push(this.parseNotification(characteristic.value));
               if (fsrData.length === this.fsrDataLength) {
-                resolve(subscription, fsrData);
+                resolve({subscription: sub, data: fsrData});
               }
             },
           );
         }),
       );
-    }
+    });
     return Promise.all(promises)
       .then(values => {
         let fsrDataArr = [];
-        for (let res in values) {
-          values[0].remove(); // Remove subscription from notifications
-          fsrDataArr.push(values[1]);
-        }
+        values.forEach(res => {
+          res.subscription.remove(); // Stop subscribing to the notifications
+          fsrDataArr.push(res.data);
+        });
         return this.networkManger.getBalanceScore(fsrDataArr);
       })
       .then(score => {
@@ -90,17 +91,20 @@ export default class DeviceManager {
       });
   }
 
-  parseNotification(fsrData) {
-    return [fsrData];
+  parseNotification(encodedBuf) {
+    let fsrData = [];
+    let byteBuf = Buffer.from(encodedBuf, 'base64');
+    for (let i = 0; i < byteBuf.length; i += 2) {
+      fsrData.push(byteBuf.readInt16LE(i));
+    }
+    return fsrData;
   }
 
   info(message) {
-    // this.setState({info: message});
     console.log(message);
   }
 
   error(message) {
-    // this.setState({info: 'ERROR: ' + message});
     console.log('ERROR: ' + message);
   }
 

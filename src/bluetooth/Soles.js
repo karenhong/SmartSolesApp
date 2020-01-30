@@ -12,12 +12,15 @@ export default class Soles {
     }
   }
 
-  *[Symbol.iterator]() {
+  // TODO: figure out how to define an iterator instead
+  getSoles() {
+    let arr = [];
     if (this.left) {
-      yield this.left;
+      arr.push(this.left);
     }
     if (this.right) {
-      yield this.right;
+      arr.push(this.right);
     }
+    return arr;
   }
 }

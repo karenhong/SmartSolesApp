@@ -47,6 +47,17 @@ const commonStyles = StyleSheet.create({
     backgroundColor: SSColors.primary,
     borderRadius: 150,
   },
+  disabledButton: {
+    borderWidth: 1,
+    borderColor: SSColors.primary,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 200,
+    height: 200,
+    backgroundColor: SSColors.primary,
+    borderRadius: 150,
+    opacity: 0.5,
+  },
   buttonText: {
     fontSize: 40,
     color: 'white',
