@@ -31,7 +31,7 @@ const TabNavigator = createMaterialBottomTabNavigator(
         tabBarLabel: 'Exercise',
         tabBarIcon: ({tintColor}) => (
           <View>
-            <Icon style={[{color: tintColor}]} size={25} name={'ios-person'} />
+            <Icon style={[{color: tintColor}]} size={25} name={'ios-walk'} />
           </View>
         ),
         activeColor: SSColors.black,
@@ -45,7 +45,11 @@ const TabNavigator = createMaterialBottomTabNavigator(
         tabBarLabel: 'Progress',
         tabBarIcon: ({tintColor}) => (
           <View>
-            <Icon style={[{color: tintColor}]} size={25} name={'ios-images'} />
+            <Icon
+              style={[{color: tintColor}]}
+              size={25}
+              name={'ios-trending-up'}
+            />
           </View>
         ),
         activeColor: SSColors.black,
