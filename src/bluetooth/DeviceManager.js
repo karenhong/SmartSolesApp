@@ -1,5 +1,4 @@
 import {BleManager} from 'react-native-ble-plx';
-import {decode as atob} from 'base-64';
 
 import NetworkManager from './NetworkManager';
 import Soles from './Soles';
