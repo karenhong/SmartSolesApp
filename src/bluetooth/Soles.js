@@ -12,6 +12,10 @@ export default class Soles {
     }
   }
 
+  connected() {
+    return this.left && this.right;
+  }
+
   // TODO: figure out how to define an iterator instead
   getSoles() {
     let arr = [];

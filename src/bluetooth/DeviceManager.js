@@ -11,10 +11,11 @@ export default class DeviceManager {
     this.soles = new Soles();
 
     // Default UUID for custom service
-    this.prefixUUID = '0000ff';
+    this.prefixUUID = '0000ffe';
     this.suffixUUID = '-0000-1000-8000-00805f9b34fb';
+    this.serviceUUID1 = '13386e50-5384-11ea-8d77-2e728ce88125';
 
-    this.fsrDataLength = 3;
+    this.fsrDataLength = 51;
   }
 
   scanAndConnect = () => {
@@ -25,8 +26,7 @@ export default class DeviceManager {
       }
 
       if (device && device.name && device.name.includes('SmartSole')) {
-        this.bleManager.stopDeviceScan(); // TODO: Move this bc you need to scan for 2 soles
-        this.info('Connecting to Smart Sole');
+        this.bleManager.stopDeviceScan();
         device
           .isConnected()
           .then((connected, error) => {
@@ -38,12 +38,16 @@ export default class DeviceManager {
             }
           })
           .then(device => {
-            this.info('Connected to Smart Sole');
+            this.info('Connected to ' + device.name);
             this.info('Discovering services and characteristics');
             return device.discoverAllServicesAndCharacteristics();
           })
           .then(device => {
+            this.info(device.name + ' ready to receive data');
             this.soles.add(device);
+            if (this.soles.connected()) {
+              this.bleManager.stopDeviceScan();
+            }
           });
       }
     });
@@ -52,8 +56,8 @@ export default class DeviceManager {
   async receiveNotifications() {
     let promises = [];
 
-    const service = this.serviceUUID('e'); // TODO: Figure out where this number is coming from and if it's different for each chip
-    const characteristicN = this.notifyUUID('e');
+    const service = this.serviceUUID();
+    const characteristicN = this.notifyUUID();
 
     this.soles.getSoles().forEach(device => {
       let fsrData = [];
@@ -66,7 +70,6 @@ export default class DeviceManager {
               if (error) {
                 return reject(error.message);
               }
-              this.info('Received notification from: ' + characteristic.uuid);
               fsrData.push(this.parseNotification(characteristic.value));
               if (fsrData.length === this.fsrDataLength) {
                 resolve({subscription: sub, data: fsrData});
@@ -93,9 +96,10 @@ export default class DeviceManager {
   parseNotification(encodedBuf) {
     let fsrData = [];
     let byteBuf = Buffer.from(encodedBuf, 'base64');
-    for (let i = 0; i < byteBuf.length; i += 2) {
+    for (let i = 0; i < byteBuf.length - 1; i += 2) {
       fsrData.push(byteBuf.readInt16LE(i));
     }
+    console.log(fsrData);
     return fsrData;
   }
 
@@ -107,15 +111,17 @@ export default class DeviceManager {
     console.log('ERROR: ' + message);
   }
 
-  serviceUUID(num) {
-    return this.prefixUUID + num + '0' + this.suffixUUID;
+  serviceUUID() {
+    return this.serviceUUID1;
+    // return this.prefixUUID + '0' + this.suffixUUID;
   }
 
-  notifyUUID(num) {
-    return this.prefixUUID + num + '1' + this.suffixUUID;
+  notifyUUID() {
+    return '133870f8-5384-11ea-8d77-2e728ce88125';
+    // return this.prefixUUID + '1' + this.suffixUUID;
   }
 
-  writeUUID(num) {
-    return this.prefixUUID + num + '2' + this.suffixUUID;
+  writeUUID() {
+    return this.prefixUUID + '2' + this.suffixUUID;
   }
 }
