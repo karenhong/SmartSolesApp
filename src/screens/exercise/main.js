@@ -1,13 +1,13 @@
 import React from 'react';
 
-import {Text, View} from 'react-native';
+import ExerciseHeader from './header';
+import ExerciseCard from './exercise-card';
 
 class ExercisePage extends React.Component {
   render() {
     return (
-      <View>
-        <Text>Exercise Page</Text>
-      </View>
+      <ExerciseHeader />
+      // <ExerciseCard />
     );
   }
 }

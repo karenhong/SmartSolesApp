@@ -6,8 +6,8 @@ import {createAppContainer} from 'react-navigation';
 import {createMaterialBottomTabNavigator} from 'react-navigation-material-bottom-tabs';
 import {Icon} from 'native-base';
 
-import HomePage from './screens/home/home';
-import ExercisePage from './screens/exercise';
+import HomePage from './screens/home/main';
+import ExercisePage from './screens/exercise/main';
 import ProgressPage from './screens/progress';
 
 import SSColors from './styles/colors.js';
