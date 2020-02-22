@@ -1,10 +1,9 @@
 import React from 'react';
-import {View} from 'react-native';
 
 import 'react-native-gesture-handler';
-import {createAppContainer} from 'react-navigation';
-import {createMaterialBottomTabNavigator} from 'react-navigation-material-bottom-tabs';
-import {Icon} from 'native-base';
+import {NavigationContainer} from '@react-navigation/native';
+import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
+import {Icon, Root} from 'native-base';
 
 import HomePage from './screens/home/main';
 import ExercisePage from './screens/exercise/main';
@@ -12,80 +11,89 @@ import ProgressPage from './screens/progress';
 
 import SSColors from './styles/colors.js';
 
-const TabNavigator = createMaterialBottomTabNavigator(
-  {
-    Home: {
-      screen: HomePage,
-      navigationOptions: {
-        tabBarLabel: 'Home',
-        tabBarIcon: ({tintColor}) => (
-          <Icon
-            style={[{color: tintColor}]}
-            size={25}
-            type="MaterialCommunityIcons"
-            name="home"
-          />
-        ),
-      },
-    },
-    Exercise: {
-      screen: ExercisePage,
-      navigationOptions: {
-        tabBarLabel: 'Exercise',
-        tabBarIcon: ({tintColor}) => (
-          <Icon
-            style={[{color: tintColor}]}
-            size={25}
-            type="MaterialCommunityIcons"
-            name="run-fast"
-          />
-        ),
-        activeColor: SSColors.black,
-        inactiveColor: SSColors.lighter,
-        barStyle: {backgroundColor: SSColors.primary},
-      },
-    },
-    Progress: {
-      screen: ExercisePage,
-      navigationOptions: {
-        tabBarLabel: 'Progress',
-        tabBarIcon: ({tintColor}) => (
-          <Icon
-            style={[{color: tintColor}]}
-            type="FontAwesome5"
-            size={25}
-            name="sliders-h"
-          />
-        ),
-        activeColor: SSColors.black,
-        inactiveColor: SSColors.lighter,
-        barStyle: {backgroundColor: SSColors.primary},
-      },
-    },
-    Profile: {
-      screen: ProgressPage,
-      navigationOptions: {
-        tabBarLabel: 'Profile',
-        tabBarIcon: ({tintColor}) => (
-          <Icon
-            style={[{color: tintColor}]}
-            type="MaterialIcons"
-            size={25}
-            name="person"
-          />
-        ),
-        activeColor: SSColors.black,
-        inactiveColor: SSColors.lighter,
-        barStyle: {backgroundColor: SSColors.primary},
-      },
-    },
-  },
-  {
-    initialRouteName: 'Home',
-    activeColor: SSColors.black,
-    inactiveColor: SSColors.lighter,
-    barStyle: {backgroundColor: SSColors.primary},
-  },
-);
+const Tab = createMaterialBottomTabNavigator();
 
-export default createAppContainer(TabNavigator);
+function MyTabs() {
+  return (
+    <Tab.Navigator
+      initialRouteName="Home"
+      activeColor={SSColors.black}
+      inactiveColor={SSColors.lighter}
+      labelStyle={{fontSize: 12}}
+      style={{backgroundColor: SSColors.lighter}}
+      barStyle={{backgroundColor: SSColors.primary, padding: 5}}>
+      <Tab.Screen
+        name="Feed"
+        component={HomePage}
+        options={{
+          tabBarLabel: 'Home',
+          tabBarIcon: ({color, size}) => (
+            <Icon
+              style={[{color: color}]}
+              size={size}
+              type="MaterialCommunityIcons"
+              name="home"
+            />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Exercise"
+        component={ExercisePage}
+        options={{
+          tabBarLabel: 'Exercise',
+          tabBarIcon: ({color, size}) => (
+            <Icon
+              style={[{color: color}]}
+              size={size}
+              type="MaterialCommunityIcons"
+              name="run-fast"
+            />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Progress"
+        component={ProgressPage}
+        options={{
+          tabBarLabel: 'Progress',
+          tabBarIcon: ({color, size}) => (
+            <Icon
+              style={[{color: color}]}
+              type="FontAwesome"
+              size={size}
+              name="sliders"
+            />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Profile"
+        component={ProgressPage}
+        options={{
+          tabBarLabel: 'Profile',
+          tabBarIcon: ({color, size}) => (
+            <Icon
+              style={[{color: color}]}
+              type="MaterialIcons"
+              size={size}
+              name="person"
+            />
+          ),
+        }}
+      />
+    </Tab.Navigator>
+  );
+}
+
+function App() {
+  return (
+    <Root>
+      <NavigationContainer>
+        <MyTabs />
+      </NavigationContainer>
+    </Root>
+  );
+}
+
+export default App;

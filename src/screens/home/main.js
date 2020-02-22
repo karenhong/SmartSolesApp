@@ -1,9 +1,11 @@
 import React from 'react';
 import {View, Text, Platform, TouchableOpacity} from 'react-native';
-import {Container} from 'native-base';
+import {Container, Content, H3, Toast} from 'native-base';
+import {Row, Grid} from 'react-native-easy-grid';
 
 import HomeHeader from './header';
 import DeviceManager from '../../bluetooth/DeviceManager';
+import Status from '../../bluetooth/DeviceManager';
 import SSStyles from '../../styles/common-styles';
 
 class HomePage extends React.Component {
@@ -30,6 +32,29 @@ class HomePage extends React.Component {
     }
   }
 
+  changeStatusToast(status, extra) {
+    let text;
+    switch (status) {
+      case Status.CONNECTED:
+        text = 'Connected to ' + extra;
+        break;
+      case Status.CONNECTING:
+        text = 'Connecting to ' + extra;
+        break;
+      case Status.SCANNING:
+        text = 'Scanning for Smart Soles';
+        break;
+      case Status.NOT_CONNECTED:
+        text = 'Lost connection to Smart Soles';
+        break;
+    }
+    Toast.show({
+      text: text,
+      duration: 3000,
+      position: 'top',
+    });
+  }
+
   assessBalance() {
     this.setState({balance: 'being assessed'});
     this.manager.receiveNotifications().then(score => {
@@ -41,41 +66,36 @@ class HomePage extends React.Component {
     return (
       <Container>
         <HomeHeader />
-        <TouchableOpacity
-          disabled={
-            this.state.balance === 'being assessed' // TODO: disable when not connected
-          }
-          onPress={() => {
-            this.assessBalance();
-          }}
-          style={
-            this.state.balance === 'being assessed'
-              ? SSStyles.disabledButton
-              : SSStyles.roundButton
-          }>
-          <Text style={SSStyles.buttonText}>Assess balance</Text>
-        </TouchableOpacity>
+        <Content
+          contentContainerStyle={{
+            flex: 1,
+          }}>
+          <Grid style={{padding: 20}}>
+            <Row size={1}>
+              <H3>Your balance</H3>
+            </Row>
+            <Row size={5}>
+              <View style={{flex: 1, alignItems: 'center'}}>
+                <TouchableOpacity
+                  disabled={
+                    this.state.balance === 'being assessed' // TODO: disable when not connected
+                  }
+                  onPress={() => {
+                    this.changeStatusToast(null);
+                    this.assessBalance();
+                  }}
+                  style={
+                    this.state.balance === 'being assessed'
+                      ? SSStyles.disabledButton
+                      : SSStyles.roundButton
+                  }>
+                  <Text style={SSStyles.buttonText}>Assess balance</Text>
+                </TouchableOpacity>
+              </View>
+            </Row>
+          </Grid>
+        </Content>
       </Container>
-      // <View
-      //   // TODO: Move this to styles file
-      //   style={{
-      //     flex: 1,
-      //     flexDirection: 'column',
-      //     justifyContent: 'center',
-      //     alignItems: 'stretch',
-      //     alignContent: 'space-between',
-      //   }}>
-      //
-      //     <Text style={SSStyles.sectionDescription}>
-      //         Your balance is {this.state.balance}.
-      //     </Text>
-      //   <View style={{flex: 1, alignItems: 'center'}}>
-      //
-      //   </View>
-      //   <View style={{flex: 1}}>
-      //
-      //   </View>
-      // </View>
     );
   }
 }

@@ -58,6 +58,8 @@
 		<string>FontAwesome.ttf</string>
 		<string>Ionicons.ttf</string>
 		<string>MaterialIcons.ttf</string>
+		<string>MaterialCommunityIcons.ttf</string>
+		<string>Roboto.tff</string>
 	</array>
 	<key>CFBundleGetInfoString</key>
 	<string></string>

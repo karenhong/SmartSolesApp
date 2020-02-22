@@ -54,7 +54,7 @@ export default {
   badgePadding: 0,
 
   // Button
-  buttonFontFamily: 'Roboto',
+  // buttonFontFamily: 'Roboto',
   buttonDisabledBg: '#b5b5b5',
   buttonPadding: 6,
   get buttonPrimaryBg() {
@@ -125,7 +125,7 @@ export default {
   checkboxTickColor: '#fff',
 
   // Color
-  brandPrimary: '#3F51B5',
+  brandPrimary: SSColors.primary,
   brandInfo: '#62B1F6',
   brandSuccess: '#5cb85c',
   brandDanger: '#d9534f',
@@ -159,27 +159,27 @@ export default {
 
   // Footer
   footerHeight: 55,
-  footerDefaultBg: '#3F51B5',
+  footerDefaultBg: SSColors.primary,
   footerPaddingBottom: 0,
 
   // FooterTab
   tabBarTextColor: '#bfc6ea',
   tabBarTextSize: 11,
   activeTab: '#fff',
-  sTabBarActiveTextColor: '#007aff',
+  sTabBarActiveTextColor: SSColors.primary,
   tabBarActiveTextColor: '#fff',
-  tabActiveBgColor: '#3F51B5',
+  tabActiveBgColor: SSColors.primary,
 
   // Header
   toolbarBtnColor: '#fff',
-  toolbarDefaultBg: '#3F51B5',
+  toolbarDefaultBg: SSColors.primary,
   toolbarHeight: 56,
   toolbarSearchIconSize: 23,
   toolbarInputColor: '#fff',
   searchBarHeight: platform === PLATFORM.IOS ? 30 : 40,
   searchBarInputHeight: platform === PLATFORM.IOS ? 40 : 50,
   toolbarBtnTextColor: '#fff',
-  toolbarDefaultBorder: '#3F51B5',
+  toolbarDefaultBorder: SSColors.primary,
   iosStatusbar: 'light-content',
   get statusBarColor() {
     return color(this.toolbarDefaultBg)

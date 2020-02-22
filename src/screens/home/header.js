@@ -1,15 +1,10 @@
 import React from 'react';
 import {
-  Container,
   Header,
-  Title,
   Button,
   Icon,
-  Left,
   Right,
   H1,
-  H2,
-  H3,
   Text,
   Body,
   StyleProvider,
@@ -21,7 +16,6 @@ class HomeHeader extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      //defauilt value of the date time
       date: '',
     };
   }
@@ -69,19 +63,17 @@ class HomeHeader extends React.Component {
   render() {
     return (
       <StyleProvider style={getTheme(material)}>
-        <Container>
-          <Header span>
-            <Body>
-              <Text>{this.state.date}</Text>
-              <H1>Good Morning, Annie</H1>
-            </Body>
-            <Right>
-              <Button transparent>
-                <Icon type="MaterialCommunityIcons" name="shoe-print" />
-              </Button>
-            </Right>
-          </Header>
-        </Container>
+        <Header span>
+          <Body>
+            <Text>{this.state.date}</Text>
+            <H1>Good Morning, Annie</H1>
+          </Body>
+          <Right>
+            <Button transparent>
+              <Icon type="MaterialCommunityIcons" name="shoe-print" />
+            </Button>
+          </Right>
+        </Header>
       </StyleProvider>
     );
   }

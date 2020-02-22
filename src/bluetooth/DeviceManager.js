@@ -4,22 +4,31 @@ import NetworkManager from './NetworkManager';
 import Soles from './Soles';
 import {Buffer} from 'buffer';
 
+export const Status = {
+  SCANNING: 'scanning',
+  CONNECTING: 'connecting',
+  CONNECTED: 'connected',
+  NOT_CONNECTED: 'not_connected',
+  READING: 'reading',
+};
+
 export default class DeviceManager {
   constructor() {
     this.bleManager = new BleManager();
     this.networkManger = new NetworkManager();
     this.soles = new Soles();
+    this.state = {
+      status: Status.NOT_CONNECTED,
+    };
 
-    // Default UUID for custom service
-    this.prefixUUID = '0000ffe';
-    this.suffixUUID = '-0000-1000-8000-00805f9b34fb';
-    this.serviceUUID1 = '13386e50-5384-11ea-8d77-2e728ce88125';
+    this.serviceUUID = '13386e50-5384-11ea-8d77-2e728ce88125';
+    this.characteristicUUID = '133870f8-5384-11ea-8d77-2e728ce88125';
 
     this.fsrDataLength = 51;
-    this.tempfsrData = [];
   }
 
   scanAndConnect = () => {
+    this.state.status = Status.SCANNING;
     this.bleManager.startDeviceScan(null, null, (error, device) => {
       if (error) {
         this.error(error.message);
@@ -57,8 +66,8 @@ export default class DeviceManager {
   async receiveNotifications() {
     let promises = [];
 
-    const service = this.serviceUUID();
-    const characteristicN = this.notifyUUID();
+    const service = this.serviceUUID;
+    const characteristicN = this.characteristicUUID;
 
     this.soles.getSoles().forEach(device => {
       let fsrData = [];
@@ -101,7 +110,6 @@ export default class DeviceManager {
       fsrData.push(byteBuf.readInt16LE(i));
     }
     console.log(fsrData);
-    this.tempfsrData = fsrData;
     return fsrData;
   }
 
@@ -111,19 +119,5 @@ export default class DeviceManager {
 
   error(message) {
     console.log('ERROR: ' + message);
-  }
-
-  serviceUUID() {
-    return this.serviceUUID1;
-    // return this.prefixUUID + '0' + this.suffixUUID;
-  }
-
-  notifyUUID() {
-    return '133870f8-5384-11ea-8d77-2e728ce88125';
-    // return this.prefixUUID + '1' + this.suffixUUID;
-  }
-
-  writeUUID() {
-    return this.prefixUUID + '2' + this.suffixUUID;
   }
 }
