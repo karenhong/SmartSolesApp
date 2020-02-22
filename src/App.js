@@ -2,11 +2,11 @@ import React from 'react';
 import {View} from 'react-native';
 
 import 'react-native-gesture-handler';
-import Icon from 'react-native-vector-icons/Ionicons';
 import {createAppContainer} from 'react-navigation';
 import {createMaterialBottomTabNavigator} from 'react-navigation-material-bottom-tabs';
+import {Icon} from 'native-base';
 
-import HomePage from './screens/home';
+import HomePage from './screens/home/home';
 import ExercisePage from './screens/exercise';
 import ProgressPage from './screens/progress';
 
@@ -19,9 +19,12 @@ const TabNavigator = createMaterialBottomTabNavigator(
       navigationOptions: {
         tabBarLabel: 'Home',
         tabBarIcon: ({tintColor}) => (
-          <View>
-            <Icon style={[{color: tintColor}]} size={25} name={'ios-home'} />
-          </View>
+          <Icon
+            style={[{color: tintColor}]}
+            size={25}
+            type="MaterialCommunityIcons"
+            name="home"
+          />
         ),
       },
     },
@@ -30,9 +33,12 @@ const TabNavigator = createMaterialBottomTabNavigator(
       navigationOptions: {
         tabBarLabel: 'Exercise',
         tabBarIcon: ({tintColor}) => (
-          <View>
-            <Icon style={[{color: tintColor}]} size={25} name={'ios-walk'} />
-          </View>
+          <Icon
+            style={[{color: tintColor}]}
+            size={25}
+            type="MaterialCommunityIcons"
+            name="run-fast"
+          />
         ),
         activeColor: SSColors.black,
         inactiveColor: SSColors.lighter,
@@ -40,17 +46,33 @@ const TabNavigator = createMaterialBottomTabNavigator(
       },
     },
     Progress: {
-      screen: ProgressPage,
+      screen: ExercisePage,
       navigationOptions: {
         tabBarLabel: 'Progress',
         tabBarIcon: ({tintColor}) => (
-          <View>
-            <Icon
-              style={[{color: tintColor}]}
-              size={25}
-              name={'ios-trending-up'}
-            />
-          </View>
+          <Icon
+            style={[{color: tintColor}]}
+            type="FontAwesome5"
+            size={25}
+            name="sliders-h"
+          />
+        ),
+        activeColor: SSColors.black,
+        inactiveColor: SSColors.lighter,
+        barStyle: {backgroundColor: SSColors.primary},
+      },
+    },
+    Profile: {
+      screen: ProgressPage,
+      navigationOptions: {
+        tabBarLabel: 'Profile',
+        tabBarIcon: ({tintColor}) => (
+          <Icon
+            style={[{color: tintColor}]}
+            type="MaterialIcons"
+            size={25}
+            name="person"
+          />
         ),
         activeColor: SSColors.black,
         inactiveColor: SSColors.lighter,

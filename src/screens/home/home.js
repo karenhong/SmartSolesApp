@@ -1,21 +1,25 @@
 import React from 'react';
 import {View, Text, Platform, TouchableOpacity} from 'react-native';
 
-import DeviceManager from '../bluetooth/DeviceManager';
-import SSStyles from '../styles/common-styles';
-
-// TODO: Prompt user to give app location permissions
+import HomeHeader from './header';
+import DeviceManager from '../../bluetooth/DeviceManager';
+import SSStyles from '../../styles/common-styles';
 
 class HomePage extends React.Component {
   constructor() {
     super();
     this.manager = new DeviceManager();
-    this.state = {info: '', connected: false, values: '', balance: '..'};
+    this.state = {
+      info: '',
+      connected: false,
+      values: '',
+      balance: '...',
+    };
   }
 
   componentDidMount() {
     if (Platform.OS === 'ios') {
-      this.manager.onStateChange(state => {
+      this.manager.bleManager.onStateChange(state => {
         if (state === 'PoweredOn') {
           this.manager.scanAndConnect();
         }
@@ -41,12 +45,10 @@ class HomePage extends React.Component {
           flexDirection: 'column',
           justifyContent: 'center',
           alignItems: 'stretch',
-          margin: 20,
           alignContent: 'space-between',
         }}>
-        <View style={{flex: 0.8}}>
-          <Text style={SSStyles.sectionTitle}>Smart Soles</Text>
-        </View>
+        <HomeHeader />
+
         <View style={{flex: 1, alignItems: 'center'}}>
           <TouchableOpacity
             disabled={

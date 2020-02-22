@@ -1,5 +1,4 @@
 const SSColors = {
-  //  TODO: @Peijia can you define our colour palette here?
   primary: '#F18701',
   light: '#F7B801',
   lighter: '#FFBF69',

@@ -16,6 +16,7 @@ export default class DeviceManager {
     this.serviceUUID1 = '13386e50-5384-11ea-8d77-2e728ce88125';
 
     this.fsrDataLength = 51;
+    this.tempfsrData = [];
   }
 
   scanAndConnect = () => {
@@ -100,6 +101,7 @@ export default class DeviceManager {
       fsrData.push(byteBuf.readInt16LE(i));
     }
     console.log(fsrData);
+    this.tempfsrData = fsrData;
     return fsrData;
   }
 
