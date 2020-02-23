@@ -141,6 +141,7 @@ export default class DeviceManager {
               if (this.getStatus() !== Status.READING) {
                 sub.remove();
                 resolve(fsrData);
+                EventRegister.emit('data', '');
               }
             },
           );
@@ -158,6 +159,7 @@ export default class DeviceManager {
           return this.networkManger.getBalanceScore(fsrDataArr);
         },
         error => {
+          EventRegister.emit('data', '');
           EventRegister.emit('error', error.message);
         },
       )
@@ -181,6 +183,7 @@ export default class DeviceManager {
       fsrData.push(byteBuf.readInt16LE(i));
     }
     console.log(fsrData);
+    EventRegister.emit('data', fsrData.toString());
     return fsrData;
   }
 }

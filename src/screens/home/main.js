@@ -17,6 +17,7 @@ class HomePage extends React.Component {
       buttonEnabled: false,
       showToast: false,
       buttonText: 'Assess Balance',
+      data: '',
     };
   }
 
@@ -34,6 +35,10 @@ class HomePage extends React.Component {
       this.changeStatusToast,
     );
 
+    this.dataListener = EventRegister.addEventListener('data', data => {
+      this.setState({data: data});
+    });
+
     this.manager.connectSmartSoles();
 
     this.changeStatusToast(Status.SCANNING);
@@ -43,6 +48,7 @@ class HomePage extends React.Component {
     Toast.toastInstance = null;
     EventRegister.removeEventListener(this.errorListener);
     EventRegister.removeEventListener(this.statusListener);
+    EventRegister.removeEventListener(this.dataListener);
   }
 
   changeStatusToast = data => {
@@ -123,6 +129,9 @@ class HomePage extends React.Component {
                     </Text>
                   </TouchableOpacity>
                 </View>
+              </Row>
+              <Row size={1}>
+                <Text>{this.state.data}</Text>
               </Row>
             </Grid>
           </Content>
