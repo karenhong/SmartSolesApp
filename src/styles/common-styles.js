@@ -2,7 +2,6 @@ import {StyleSheet} from 'react-native';
 import SSColors from './colors';
 
 /**
- * TODO @Peijia
  * Styles elements shared between many pages can be defined here
  * For specific style components, create a new js file in this folder and define a new stylesheet
  */

@@ -5,7 +5,7 @@ import {Row, Grid} from 'react-native-easy-grid';
 
 import HomeHeader from './header';
 import DeviceManager from '../../bluetooth/DeviceManager';
-import Status from '../../bluetooth/DeviceManager';
+import {Status} from '../../bluetooth/Status';
 import SSStyles from '../../styles/common-styles';
 
 class HomePage extends React.Component {
@@ -16,7 +16,7 @@ class HomePage extends React.Component {
       info: '',
       connected: false,
       values: '',
-      balance: '...',
+      buttonEnabled: false,
     };
   }
 
@@ -30,33 +30,47 @@ class HomePage extends React.Component {
     } else {
       this.manager.scanAndConnect();
     }
+    this.manager.statusEmitter.addListener(
+      'changeStatus',
+      this.changeStatusToast,
+    );
   }
 
-  changeStatusToast(status, extra) {
-    let text;
+  componentWillUnmount(): void {
+    this.manager.statusEmitter.removeListener('changeStatus');
+  }
+
+  changeStatusToast = (status, extra) => {
+    console.log('Received ' + status);
+    let text = '';
+    let type = 'default';
     switch (status) {
-      case Status.CONNECTED:
+      case Status.CONNECTED: {
+        type = 'success';
         text = 'Connected to ' + extra;
+        this.setState({buttonEnabled: true});
         break;
-      case Status.CONNECTING:
-        text = 'Connecting to ' + extra;
-        break;
-      case Status.SCANNING:
+      }
+      case Status.SCANNING: {
         text = 'Scanning for Smart Soles';
         break;
-      case Status.NOT_CONNECTED:
+      }
+      case Status.NOT_CONNECTED: {
+        type = 'danger';
         text = 'Lost connection to Smart Soles';
+        this.setState({buttonEnabled: false});
         break;
+      }
     }
     Toast.show({
       text: text,
       duration: 3000,
       position: 'top',
+      type: type,
     });
-  }
+  };
 
   assessBalance() {
-    this.setState({balance: 'being assessed'});
     this.manager.receiveNotifications().then(score => {
       this.setState({balance: score});
     });
@@ -77,15 +91,12 @@ class HomePage extends React.Component {
             <Row size={5}>
               <View style={{flex: 1, alignItems: 'center'}}>
                 <TouchableOpacity
-                  disabled={
-                    this.state.balance === 'being assessed' // TODO: disable when not connected
-                  }
+                  disabled={!this.state.buttonEnabled}
                   onPress={() => {
-                    this.changeStatusToast(null);
                     this.assessBalance();
                   }}
                   style={
-                    this.state.balance === 'being assessed'
+                    !this.state.buttonEnabled
                       ? SSStyles.disabledButton
                       : SSStyles.roundButton
                   }>

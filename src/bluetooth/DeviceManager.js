@@ -1,19 +1,15 @@
 import {BleManager} from 'react-native-ble-plx';
+import {NativeEventEmitter} from 'react-native';
 
 import NetworkManager from './NetworkManager';
 import Soles from './Soles';
 import {Buffer} from 'buffer';
-
-export const Status = {
-  SCANNING: 'scanning',
-  CONNECTING: 'connecting',
-  CONNECTED: 'connected',
-  NOT_CONNECTED: 'not_connected',
-  READING: 'reading',
-};
+import {Status} from './Status';
 
 export default class DeviceManager {
   constructor() {
+    this.statusEmitter = new NativeEventEmitter('changeStatus');
+
     this.bleManager = new BleManager();
     this.networkManger = new NetworkManager();
     this.soles = new Soles();
@@ -27,8 +23,13 @@ export default class DeviceManager {
     this.fsrDataLength = 51;
   }
 
+  statusChange = (status, extra) => {
+    this.state.status = status;
+    this.statusEmitter.emit('changeStatus', status, extra);
+  };
+
   scanAndConnect = () => {
-    this.state.status = Status.SCANNING;
+    this.statusChange(Status.SCANNING, '');
     this.bleManager.startDeviceScan(null, null, (error, device) => {
       if (error) {
         this.error(error.message);
@@ -48,11 +49,10 @@ export default class DeviceManager {
             }
           })
           .then(device => {
-            this.info('Connected to ' + device.name);
-            this.info('Discovering services and characteristics');
             return device.discoverAllServicesAndCharacteristics();
           })
           .then(device => {
+            this.statusChange(Status.CONNECTED, device.name);
             this.info(device.name + ' ready to receive data');
             this.soles.add(device);
             if (this.soles.connected()) {
