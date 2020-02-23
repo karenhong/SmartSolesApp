@@ -1,5 +1,5 @@
 import {BleManager} from 'react-native-ble-plx';
-import {NativeEventEmitter} from 'react-native';
+import {NativeEventEmitter, Platform} from 'react-native';
 
 import NetworkManager from './NetworkManager';
 import Soles from './Soles';
@@ -29,15 +29,37 @@ export default class DeviceManager {
   };
 
   connectSmartSoles = () => {
-    return this.checkConnected().then(
-      connected => {
-        if (!connected) {
-          return this.scanAndConnect();
-        }
-      },
-      err => 'error checking connected ' + err,
-    );
+    this.bleManager.onStateChange(state => {
+      if (state === 'PoweredOn') {
+        return this.findAndConnect();
+      }
+    });
+
+    return this.bleManager.state().then(state => {
+      if (state !== 'PoweredOn') {
+        this.statusEmitter.emit('error', 'Bluetooth needs to be turned on');
+        return Promise.resolve();
+      } else {
+        return this.findAndConnect();
+      }
+    });
   };
+
+  async findAndConnect() {
+    try {
+      let devices = await this.bleManager.connectedDevices([this.serviceUUID]);
+      for (let device in devices) {
+        if (device.name.includes('SmartSole')) {
+          await this.connectSole(device);
+        }
+      }
+    } catch (err) {
+      this.statusEmitter.emit('error', err.message);
+    }
+    if (!this.soles.connected()) {
+      return this.scanAndConnect();
+    }
+  }
 
   scanAndConnect = () => {
     let discovered = [];
@@ -45,7 +67,7 @@ export default class DeviceManager {
 
     return this.bleManager.startDeviceScan(null, null, (error, device) => {
       if (error) {
-        this.error(error.message);
+        console.log(error);
         this.statusEmitter.emit('error', error.message);
         return;
       }
@@ -64,20 +86,6 @@ export default class DeviceManager {
     });
   };
 
-  async checkConnected() {
-    try {
-      let devices = await this.bleManager.connectedDevices([this.serviceUUID]);
-      for (let device in devices) {
-        if (device.name.includes('SmartSole')) {
-          await this.connectSole(device);
-        }
-      }
-    } catch (err) {
-      this.statusEmitter.emit('error', err.message);
-    }
-    return Promise.resolve(this.soles.connected());
-  }
-
   connectSole = device => {
     return device
       .isConnected()
@@ -87,18 +95,17 @@ export default class DeviceManager {
             return device.connect();
           }
           if (error) {
-            this.error(error.message);
+            console.log(error);
           }
-          console.log(device.id + ' already connected');
           return Promise.resolve(device);
         },
-        err => this.statusEmitter.emit('error', err),
+        err => this.statusEmitter.emit('error', err.message),
       )
       .then(
         device => {
           return device.discoverAllServicesAndCharacteristics();
         },
-        err => this.statusEmitter.emit('error', err),
+        err => this.statusEmitter.emit('error', err.message),
       )
       .then(
         device => {
@@ -108,11 +115,18 @@ export default class DeviceManager {
             console.log('Stopped scanning');
             this.statusChange(Status.CONNECTED, device.name);
             this.bleManager.stopDeviceScan();
+            device.onDisconnected((err, device) => {
+              this.statusEmitter.emit(
+                'error',
+                device.name + ': ' + err.message,
+              );
+              this.statusChange(Status.NOT_CONNECTED);
+            });
           } else {
             this.statusChange(Status.CONNECTING, device.name);
           }
         },
-        err => this.statusEmitter.emit('error', err),
+        err => this.statusEmitter.emit('error', err.message),
       );
   };
 

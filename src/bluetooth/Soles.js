@@ -4,24 +4,21 @@ export default class Soles {
   left: Device;
   right: Device;
 
-  add(device, emitter) {
+  add(device) {
     if (device.name === 'SmartSoleL') {
       this.left = device;
     } else if (device.name === 'SmartSoleR') {
       this.right = device;
     }
 
-    device.onDisconnected(device.id, (err, device) => {
-      emitter.emit('error', err);
-      if (device.id === this.left.id) {
+    device.onDisconnected((err, device) => {
+      if (this.left && device.id === this.left.id) {
         this.left = null;
       }
 
-      if (device.id === this.right.id) {
+      if (this.right && device.id === this.right.id) {
         this.right = null;
       }
-
-      device.removeListener(device.id);
     });
   }
 

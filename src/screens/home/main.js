@@ -34,15 +34,9 @@ class HomePage extends React.Component {
       'changeStatus',
       this.changeStatusToast,
     );
-    if (Platform.OS === 'ios') {
-      this.manager.bleManager.onStateChange(state => {
-        if (state === 'PoweredOn') {
-          this.manager.connectSmartSoles();
-        }
-      });
-    } else {
-      this.manager.connectSmartSoles();
-    }
+
+    this.manager.connectSmartSoles();
+
     this.changeStatusToast(Status.SCANNING);
   }
 
