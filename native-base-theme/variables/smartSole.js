@@ -145,7 +145,7 @@ export default {
 
   // Font
   DefaultFontSize: 16,
-  fontFamily: 'Roboto',
+  fontFamily: PLATFORM.IOS ? 'Helvetica Neue' : 'Roboto',
   fontSizeBase: 15,
   get fontSizeH1() {
     return this.fontSizeBase * 1.8;
@@ -271,7 +271,7 @@ export default {
   },
 
   // Title
-  titleFontfamily: 'Roboto',
+  titleFontfamily: PLATFORM.IOS ? 'Helvetica Neue' : 'Roboto',
   titleFontSize: 19,
   subTitleFontSize: 14,
   subtitleColor: '#FFF',

@@ -100,6 +100,7 @@ export default class DeviceManager {
         device.onDisconnected(() => {
           EventRegister.emit('error', 'Smart Sole disconnected');
           this.statusChange(Status.NOT_CONNECTED);
+          this.findAndConnect();
         });
       } else {
         this.statusChange(Status.CONNECTING, device.name);
