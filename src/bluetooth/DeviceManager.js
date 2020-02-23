@@ -1,5 +1,5 @@
 import {BleManager} from 'react-native-ble-plx';
-import {NativeEventEmitter, Platform} from 'react-native';
+import {EventRegister} from 'react-native-event-listeners';
 
 import NetworkManager from './NetworkManager';
 import Soles from './Soles';
@@ -8,8 +8,6 @@ import {Status} from './Status';
 
 export default class DeviceManager {
   constructor() {
-    this.statusEmitter = new NativeEventEmitter('changeStatus');
-
     this.bleManager = new BleManager();
     this.networkManger = new NetworkManager();
     this.soles = new Soles();
@@ -19,13 +17,11 @@ export default class DeviceManager {
 
     this.serviceUUID = '13386e50-5384-11ea-8d77-2e728ce88125';
     this.characteristicUUID = '133870f8-5384-11ea-8d77-2e728ce88125';
-
-    this.fsrDataLength = 51;
   }
 
   statusChange = (status, extra) => {
     this.state.status = status;
-    this.statusEmitter.emit('changeStatus', status, extra);
+    EventRegister.emit('changeStatus', {status: status, extra: extra});
   };
 
   connectSmartSoles = () => {
@@ -37,7 +33,7 @@ export default class DeviceManager {
 
     return this.bleManager.state().then(state => {
       if (state !== 'PoweredOn') {
-        this.statusEmitter.emit('error', 'Bluetooth needs to be turned on');
+        EventRegister.emit('error', 'Bluetooth needs to be turned on');
         return Promise.resolve();
       } else {
         return this.findAndConnect();
@@ -54,7 +50,7 @@ export default class DeviceManager {
         }
       }
     } catch (err) {
-      this.statusEmitter.emit('error', err.message);
+      EventRegister.emit('error', err.message);
     }
     if (!this.soles.connected()) {
       return this.scanAndConnect();
@@ -68,7 +64,7 @@ export default class DeviceManager {
     return this.bleManager.startDeviceScan(null, null, (error, device) => {
       if (error) {
         console.log(error);
-        this.statusEmitter.emit('error', error.message);
+        EventRegister.emit('error', error.message);
         return;
       }
       if (
@@ -78,10 +74,7 @@ export default class DeviceManager {
         !discovered.includes(device.id)
       ) {
         discovered.push(device.id);
-        return this.connectSole(device).then(
-          () => {},
-          err => this.statusEmitter.emit('error', err.message),
-        );
+        return this.connectSole(device);
       }
     });
   };
@@ -99,38 +92,35 @@ export default class DeviceManager {
           }
           return Promise.resolve(device);
         },
-        err => this.statusEmitter.emit('error', err.message),
+        err => EventRegister.emit('error', err.message),
       )
       .then(
         device => {
           return device.discoverAllServicesAndCharacteristics();
         },
-        err => this.statusEmitter.emit('error', err.message),
+        err => EventRegister.emit('error', err.message),
       )
       .then(
         device => {
           console.log(device.name + ' ready to receive data');
-          this.soles.add(device, this.statusEmitter);
+          this.soles.add(device);
           if (this.soles.connected()) {
             console.log('Stopped scanning');
             this.statusChange(Status.CONNECTED, device.name);
             this.bleManager.stopDeviceScan();
             device.onDisconnected((err, device) => {
-              this.statusEmitter.emit(
-                'error',
-                device.name + ': ' + err.message,
-              );
+              EventRegister.emit('error', device.name + ' disconnected');
               this.statusChange(Status.NOT_CONNECTED);
             });
           } else {
             this.statusChange(Status.CONNECTING, device.name);
           }
         },
-        err => this.statusEmitter.emit('error', err.message),
+        err => EventRegister.emit('error', err.message),
       );
   };
 
-  async receiveNotifications() {
+  receiveNotifications = async () => {
     let promises = [];
 
     const service = this.serviceUUID;
@@ -145,11 +135,12 @@ export default class DeviceManager {
             characteristicN,
             (error, characteristic) => {
               if (error) {
-                return reject(error.message);
+                return reject(error);
               }
               fsrData.push(this.parseNotification(characteristic.value));
-              if (fsrData.length === this.fsrDataLength) {
-                resolve({subscription: sub, data: fsrData});
+              if (this.getStatus() !== Status.READING) {
+                sub.remove();
+                resolve(fsrData);
               }
             },
           );
@@ -157,18 +148,31 @@ export default class DeviceManager {
       );
     });
     return Promise.all(promises)
-      .then(values => {
-        let fsrDataArr = [];
-        values.forEach(res => {
-          res.subscription.remove(); // Stop subscribing to the notifications
-          fsrDataArr.push(res.data);
-        });
-        return this.networkManger.getBalanceScore(fsrDataArr);
-      })
+      .then(
+        values => {
+          let fsrDataArr = [];
+          values.forEach(res => {
+            res.subscription.remove(); // Stop subscribing to the notifications
+            fsrDataArr.push(res);
+          });
+          return this.networkManger.getBalanceScore(fsrDataArr);
+        },
+        error => {
+          EventRegister.emit('error', error.message);
+        },
+      )
       .then(score => {
         return Promise.resolve(score);
       });
-  }
+  };
+
+  getStatus = () => {
+    return this.state.status;
+  };
+
+  setStatus = status => {
+    this.state.status = status;
+  };
 
   parseNotification(encodedBuf) {
     let fsrData = [];

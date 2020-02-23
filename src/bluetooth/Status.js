@@ -4,4 +4,5 @@ export const Status = {
   CONNECTING: 'connecting',
   NOT_CONNECTED: 'not_connected',
   READING: 'reading',
+  GETTING_BALANCE: 'getting_balance',
 };

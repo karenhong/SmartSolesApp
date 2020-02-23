@@ -1,7 +1,8 @@
 import React from 'react';
-import {View, Text, Platform, TouchableOpacity} from 'react-native';
+import {View, Text, TouchableOpacity} from 'react-native';
 import {Container, Content, H3, Toast, Root} from 'native-base';
 import {Row, Grid} from 'react-native-easy-grid';
+import {EventRegister} from 'react-native-event-listeners';
 
 import HomeHeader from './header';
 import DeviceManager from '../../bluetooth/DeviceManager';
@@ -13,16 +14,14 @@ class HomePage extends React.Component {
     super();
     this.manager = new DeviceManager();
     this.state = {
-      info: '',
-      connected: false,
-      values: '',
       buttonEnabled: false,
       showToast: false,
+      buttonText: 'Assess Balance',
     };
   }
 
   componentDidMount() {
-    this.manager.statusEmitter.addListener('error', errMsg => {
+    this.errorListener = EventRegister.addEventListener('error', errMsg => {
       Toast.show({
         text: errMsg,
         duration: 3000,
@@ -30,7 +29,7 @@ class HomePage extends React.Component {
         type: 'danger',
       });
     });
-    this.manager.statusEmitter.addListener(
+    this.statusListener = EventRegister.addEventListener(
       'changeStatus',
       this.changeStatusToast,
     );
@@ -42,15 +41,15 @@ class HomePage extends React.Component {
 
   componentWillUnmount(): void {
     Toast.toastInstance = null;
-    this.manager.statusEmitter.removeListener('changeStatus');
-    this.manager.statusEmitter.removeListener('error');
+    EventRegister.removeEventListener(this.errorListener);
+    EventRegister.removeEventListener(this.statusListener);
   }
 
-  changeStatusToast = (status, extra) => {
+  changeStatusToast = data => {
     let text = '';
     let type = 'default';
     let duration = 3000;
-    switch (status) {
+    switch (data.status) {
       case Status.CONNECTED:
         type = 'success';
         text = 'Connected to Smart Soles';
@@ -58,7 +57,7 @@ class HomePage extends React.Component {
         break;
       case Status.CONNECTING:
         type = 'success';
-        text = 'Connected to ' + extra;
+        text = 'Connected to ' + data.extra;
         duration = 1000;
         break;
       case Status.SCANNING:
@@ -78,9 +77,13 @@ class HomePage extends React.Component {
     });
   };
 
-  assessBalance() {
+  startAssessBalance() {
+    this.manager.setStatus(Status.READING);
     this.manager.receiveNotifications().then(score => {
       this.setState({balance: score});
+      this.setState({buttonEnabled: true});
+      this.setState({buttonText: 'Assess Balance'});
+      this.manager.setStatus(Status.CONNECTED);
     });
   }
 
@@ -102,14 +105,22 @@ class HomePage extends React.Component {
                   <TouchableOpacity
                     disabled={!this.state.buttonEnabled}
                     onPress={() => {
-                      this.assessBalance();
+                      if (this.manager.getStatus() === Status.READING) {
+                        this.manager.setStatus(Status.GETTING_BALANCE);
+                        this.setState({buttonEnabled: false});
+                      } else {
+                        this.setState({buttonText: 'Stop'});
+                        this.startAssessBalance();
+                      }
                     }}
                     style={
                       !this.state.buttonEnabled
                         ? SSStyles.disabledButton
                         : SSStyles.roundButton
                     }>
-                    <Text style={SSStyles.buttonText}>Assess balance</Text>
+                    <Text style={SSStyles.buttonText}>
+                      {this.state.buttonText}
+                    </Text>
                   </TouchableOpacity>
                 </View>
               </Row>
