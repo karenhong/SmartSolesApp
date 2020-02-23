@@ -17,11 +17,11 @@ function MyTabs() {
   return (
     <Tab.Navigator
       initialRouteName="Home"
-      activeColor={SSColors.black}
-      inactiveColor={SSColors.lighter}
+      activeColor={SSColors.lighter}
+      inactiveColor={SSColors.black}
       labelStyle={{fontSize: 12}}
-      style={{backgroundColor: SSColors.lighter}}
-      barStyle={{backgroundColor: SSColors.primary, padding: 5}}>
+      style={{backgroundColor: SSColors.background}}
+      barStyle={{backgroundColor: SSColors.background, padding: 5}}>
       <Tab.Screen
         name="Feed"
         component={HomePage}

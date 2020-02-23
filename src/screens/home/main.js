@@ -16,9 +16,9 @@ class HomePage extends React.Component {
     super();
     this.manager = new DeviceManager();
     this.state = {
-      buttonEnabled: false,
+      enabled: false,
       showToast: false,
-      buttonText: 'Assess Balance',
+      buttonText: 'Start',
       data: '',
     };
   }
@@ -61,7 +61,7 @@ class HomePage extends React.Component {
       case Status.CONNECTED:
         type = 'success';
         text = 'Connected to Smart Soles';
-        this.setState({buttonEnabled: true});
+        this.setState({enabled: true});
         break;
       case Status.CONNECTING:
         type = 'success';
@@ -74,7 +74,7 @@ class HomePage extends React.Component {
       case Status.NOT_CONNECTED:
         type = 'danger';
         text = 'Lost connection to Smart Soles';
-        this.setState({buttonEnabled: false});
+        this.setState({enabled: false});
         break;
     }
     Toast.show({
@@ -89,7 +89,7 @@ class HomePage extends React.Component {
     this.manager.setStatus(Status.READING);
     this.manager.receiveNotifications().then(score => {
       this.setState({balance: score});
-      this.setState({buttonEnabled: true});
+      this.setState({enabled: true});
       this.setState({buttonText: 'Assess Balance'});
       this.manager.setStatus(Status.CONNECTED);
     });
@@ -99,7 +99,7 @@ class HomePage extends React.Component {
     return (
       <Root>
         <Container>
-          <HomeHeader />
+          <HomeHeader connected={this.state.enabled} />
           <Content
             contentContainerStyle={{
               flex: 1,
@@ -117,23 +117,26 @@ class HomePage extends React.Component {
                       indeterminate={false}
                       progress={0.2}
                       strokeCap={'round'}
+                      color={SSColors.accent}
+                      unfilledColor={SSColors.lightGray}
+                      borderWidth={0}
                     />
                   </View>
                   <View style={SSStyles.center}>
                     <TouchableOpacity
-                      disabled={!this.state.buttonEnabled}
+                      disabled={!this.state.enabled}
                       zIndex={5}
                       onPress={() => {
                         if (this.manager.getStatus() === Status.READING) {
                           this.manager.setStatus(Status.GETTING_BALANCE);
-                          this.setState({buttonEnabled: false});
+                          this.setState({enabled: false});
                         } else {
                           this.setState({buttonText: 'Stop'});
                           this.startAssessBalance();
                         }
                       }}
                       style={
-                        !this.state.buttonEnabled
+                        !this.state.enabled
                           ? SSStyles.disabledButton
                           : SSStyles.roundButton
                       }>

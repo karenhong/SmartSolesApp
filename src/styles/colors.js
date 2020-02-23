@@ -1,10 +1,15 @@
 const SSColors = {
-  primary: '#F18701',
-  light: '#F7B801',
-  lighter: '#FFBF69',
-  dark: '#F35B04',
+  accent: '#235EB2',
+  light: '#71A4EB',
+  lighter: '#71A4EB',
+
+  gray: '#949494',
+  lightGray: '#e8e8e8',
+  darkGray: '#4D4D4D',
   black: '#000',
-  white: '#FFF',
+
+  white: '#F7F7F7',
+  background: '#FFF',
 };
 
 export default SSColors;

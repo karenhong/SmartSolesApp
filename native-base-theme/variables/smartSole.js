@@ -125,7 +125,7 @@ export default {
   checkboxTickColor: '#fff',
 
   // Color
-  brandPrimary: SSColors.primary,
+  brandPrimary: SSColors.accent,
   brandInfo: '#62B1F6',
   brandSuccess: '#5cb85c',
   brandDanger: '#d9534f',
@@ -159,27 +159,27 @@ export default {
 
   // Footer
   footerHeight: 55,
-  footerDefaultBg: SSColors.primary,
+  footerDefaultBg: SSColors.background,
   footerPaddingBottom: 0,
 
   // FooterTab
   tabBarTextColor: '#bfc6ea',
   tabBarTextSize: 11,
   activeTab: '#fff',
-  sTabBarActiveTextColor: SSColors.primary,
+  sTabBarActiveTextColor: SSColors.accent,
   tabBarActiveTextColor: '#fff',
-  tabActiveBgColor: SSColors.primary,
+  tabActiveBgColor: SSColors.background,
 
   // Header
   toolbarBtnColor: '#fff',
-  toolbarDefaultBg: SSColors.primary,
+  toolbarDefaultBg: SSColors.background,
   toolbarHeight: 56,
   toolbarSearchIconSize: 23,
   toolbarInputColor: '#fff',
   searchBarHeight: platform === PLATFORM.IOS ? 30 : 40,
   searchBarInputHeight: platform === PLATFORM.IOS ? 40 : 50,
   toolbarBtnTextColor: '#fff',
-  toolbarDefaultBorder: SSColors.primary,
+  toolbarDefaultBorder: SSColors.background,
   iosStatusbar: 'light-content',
   get statusBarColor() {
     return color(this.toolbarDefaultBg)
@@ -240,7 +240,7 @@ export default {
   },
 
   // Segment
-  segmentBackgroundColor: SSColors.primary,
+  segmentBackgroundColor: SSColors.background,
   segmentActiveBackgroundColor: '#fff',
   segmentTextColor: '#fff',
   segmentActiveTextColor: '#3F51B5',
@@ -252,14 +252,14 @@ export default {
   inverseSpinnerColor: '#1A191B',
 
   // Tab
-  tabDefaultBg: SSColors.primary,
+  tabDefaultBg: SSColors.background,
   topTabBarTextColor: '#b3c7f9',
   topTabBarActiveTextColor: '#fff',
   topTabBarBorderColor: '#fff',
   topTabBarActiveBorderColor: '#fff',
 
   // Tabs
-  tabBgColor: SSColors.primary,
+  tabBgColor: SSColors.background,
   tabFontSize: 15,
 
   // Text

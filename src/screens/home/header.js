@@ -11,6 +11,7 @@ import {
 } from 'native-base';
 import getTheme from '../../../native-base-theme/components';
 import material from '../../../native-base-theme/variables/smartSole';
+import SSColors from '../../styles/colors';
 
 class HomeHeader extends React.Component {
   constructor(props) {
@@ -66,11 +67,18 @@ class HomeHeader extends React.Component {
         <Header span>
           <Body>
             <Text>{this.state.date}</Text>
-            <H1>Good Morning, Annie</H1>
+            <H1>Good morning, Annie.</H1>
           </Body>
           <Right>
             <Button transparent>
-              <Icon type="MaterialCommunityIcons" name="shoe-print" />
+              <Icon
+                type="MaterialCommunityIcons"
+                name="shoe-print"
+                style={{
+                  fontSize: 35,
+                  color: this.props.connected ? SSColors.accent : SSColors.gray,
+                }}
+              />
             </Button>
           </Right>
         </Header>
