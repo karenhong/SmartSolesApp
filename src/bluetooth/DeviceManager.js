@@ -41,21 +41,21 @@ export default class DeviceManager {
     });
   };
 
-  async findAndConnect() {
+  findAndConnect = async () => {
     try {
       let devices = await this.bleManager.connectedDevices([this.serviceUUID]);
-      for (let device in devices) {
+      await devices.forEach(async device => {
         if (device.name.includes('SmartSole')) {
           await this.connectSole(device);
         }
-      }
+      });
     } catch (err) {
       EventRegister.emit('error', err.message);
     }
     if (!this.soles.connected()) {
-      return this.scanAndConnect();
+      await this.scanAndConnect();
     }
-  }
+  };
 
   scanAndConnect = () => {
     let discovered = [];
@@ -79,45 +79,34 @@ export default class DeviceManager {
     });
   };
 
-  connectSole = device => {
-    return device
-      .isConnected()
-      .then(
-        (connected, error) => {
-          if (!connected) {
-            return device.connect();
-          }
-          if (error) {
-            console.log(error);
-          }
-          return Promise.resolve(device);
-        },
-        err => EventRegister.emit('error', err.message),
-      )
-      .then(
-        device => {
-          return device.discoverAllServicesAndCharacteristics();
-        },
-        err => EventRegister.emit('error', err.message),
-      )
-      .then(
-        device => {
-          console.log(device.name + ' ready to receive data');
-          this.soles.add(device);
-          if (this.soles.connected()) {
-            console.log('Stopped scanning');
-            this.statusChange(Status.CONNECTED, device.name);
-            this.bleManager.stopDeviceScan();
-            device.onDisconnected((err, device) => {
-              EventRegister.emit('error', device.name + ' disconnected');
-              this.statusChange(Status.NOT_CONNECTED);
-            });
-          } else {
-            this.statusChange(Status.CONNECTING, device.name);
-          }
-        },
-        err => EventRegister.emit('error', err.message),
-      );
+  connectSole = async device => {
+    try {
+      let connected,
+        err = await device.isConnected();
+      if (err) {
+        EventRegister.emit('error', err.message);
+        return;
+      }
+      let connectedDev = device;
+      if (!connected) {
+        connectedDev = await device.connect();
+      }
+      await connectedDev.discoverAllServicesAndCharacteristics();
+      console.log(device.name + ' ready to receive data');
+      this.soles.add(device);
+      if (this.soles.connected()) {
+        this.statusChange(Status.CONNECTED, device.name);
+        this.bleManager.stopDeviceScan();
+        device.onDisconnected(() => {
+          EventRegister.emit('error', 'Smart Sole disconnected');
+          this.statusChange(Status.NOT_CONNECTED);
+        });
+      } else {
+        this.statusChange(Status.CONNECTING, device.name);
+      }
+    } catch (err) {
+      EventRegister.emit('error', err.message);
+    }
   };
 
   receiveNotifications = async () => {
@@ -140,7 +129,7 @@ export default class DeviceManager {
               fsrData.push(this.parseNotification(characteristic.value));
               if (this.getStatus() !== Status.READING) {
                 sub.remove();
-                resolve(fsrData);
+                resolve({device: device, data: fsrData});
                 EventRegister.emit('data', '');
               }
             },
@@ -151,10 +140,9 @@ export default class DeviceManager {
     return Promise.all(promises)
       .then(
         values => {
-          let fsrDataArr = [];
+          let fsrDataArr = {};
           values.forEach(res => {
-            res.subscription.remove(); // Stop subscribing to the notifications
-            fsrDataArr.push(res);
+            fsrDataArr[res.device.name] = res.data;
           });
           return this.networkManger.getBalanceScore(fsrDataArr);
         },

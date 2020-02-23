@@ -11,19 +11,19 @@ export default class Soles {
       this.right = device;
     }
 
-    device.onDisconnected((err, device) => {
-      if (this.left && device.id === this.left.id) {
+    device.onDisconnected((err, dev) => {
+      if (this.left && dev.id === this.left.id) {
         this.left = null;
       }
 
-      if (this.right && device.id === this.right.id) {
+      if (this.right && dev.id === this.right.id) {
         this.right = null;
       }
     });
   }
 
   connected() {
-    return this.left && this.right;
+    return !!(this.left && this.right);
   }
 
   // TODO: figure out how to define an iterator instead
