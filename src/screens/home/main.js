@@ -19,6 +19,7 @@ class HomePage extends React.Component {
     this.manager = new DeviceManager();
     this.state = {
       enabled: false,
+      connected: false,
       showToast: false,
       buttonText: 'Start',
       data: '',
@@ -74,6 +75,7 @@ class HomePage extends React.Component {
         type = 'success';
         text = 'Connected to Smart Soles';
         this.updateState({enabled: true});
+        this.updateState({connected: true});
         break;
       case Status.CONNECTING:
         type = 'success';
@@ -87,6 +89,7 @@ class HomePage extends React.Component {
         type = 'danger';
         text = 'Lost connection to Smart Soles';
         this.updateState({enabled: false});
+        this.updateState({connected: false});
         break;
     }
     Toast.show({
@@ -111,14 +114,16 @@ class HomePage extends React.Component {
     return (
       <Root>
         <Container>
-          <HomeHeader connected={this.state.enabled} />
+          <HomeHeader connected={this.state.connected} />
           <Content
             contentContainerStyle={{
               flex: 1,
             }}>
             <Grid style={{padding: 20}}>
               <Row size={1}>
-                <H3 style={{fontWeight: 'bold', color: SSColors.darkGray}}>Your balance</H3>
+                <H3 style={{fontWeight: 'bold', color: SSColors.darkGray}}>
+                  Your balance
+                </H3>
               </Row>
               <Row size={5}>
                 <View style={SSStyles.container}>
