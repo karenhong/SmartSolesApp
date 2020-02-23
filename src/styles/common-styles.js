@@ -1,5 +1,6 @@
 import {StyleSheet} from 'react-native';
 import SSColors from './colors';
+import React from 'react';
 
 /**
  * Styles elements shared between many pages can be defined here
@@ -37,24 +38,24 @@ const commonStyles = StyleSheet.create({
     textAlign: 'right',
   },
   roundButton: {
-    borderWidth: 40,
+    borderWidth: 0,
     borderColor: SSColors.lighter,
     alignItems: 'center',
     justifyContent: 'center',
-    width: 280,
-    height: 280,
+    width: 150,
+    height: 150,
     backgroundColor: SSColors.primary,
-    borderRadius: 140,
+    borderRadius: 75,
   },
   disabledButton: {
-    borderWidth: 40,
+    borderWidth: 0,
     borderColor: SSColors.primary,
     alignItems: 'center',
     justifyContent: 'center',
-    width: 280,
-    height: 280,
+    width: 150,
+    height: 150,
     backgroundColor: SSColors.primary,
-    borderRadius: 140,
+    borderRadius: 75,
     opacity: 0.5,
   },
   buttonText: {
@@ -62,6 +63,27 @@ const commonStyles = StyleSheet.create({
     color: 'white',
     textAlign: 'center',
     fontWeight: '700',
+  },
+  behind: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    width: '100%',
+    height: '100%',
+  },
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    height: '100%',
+    justifyContent: 'center',
+  },
+  center: {
+    width: '100%',
+    height: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 

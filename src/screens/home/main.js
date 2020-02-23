@@ -3,11 +3,13 @@ import {View, Text, TouchableOpacity} from 'react-native';
 import {Container, Content, H3, Toast, Root} from 'native-base';
 import {Row, Grid} from 'react-native-easy-grid';
 import {EventRegister} from 'react-native-event-listeners';
+import {Circle} from 'react-native-progress';
 
 import HomeHeader from './header';
 import DeviceManager from '../../bluetooth/DeviceManager';
 import {Status} from '../../bluetooth/Status';
 import SSStyles from '../../styles/common-styles';
+import SSColors from '../../styles/colors';
 
 class HomePage extends React.Component {
   constructor() {
@@ -107,27 +109,39 @@ class HomePage extends React.Component {
                 <H3>Your balance</H3>
               </Row>
               <Row size={5}>
-                <View style={{flex: 1, alignItems: 'center'}}>
-                  <TouchableOpacity
-                    disabled={!this.state.buttonEnabled}
-                    onPress={() => {
-                      if (this.manager.getStatus() === Status.READING) {
-                        this.manager.setStatus(Status.GETTING_BALANCE);
-                        this.setState({buttonEnabled: false});
-                      } else {
-                        this.setState({buttonText: 'Stop'});
-                        this.startAssessBalance();
-                      }
-                    }}
-                    style={
-                      !this.state.buttonEnabled
-                        ? SSStyles.disabledButton
-                        : SSStyles.roundButton
-                    }>
-                    <Text style={SSStyles.buttonText}>
-                      {this.state.buttonText}
-                    </Text>
-                  </TouchableOpacity>
+                <View style={SSStyles.container}>
+                  <View style={SSStyles.behind}>
+                    <Circle
+                      size={280}
+                      thickness={40}
+                      indeterminate={false}
+                      progress={0.2}
+                      strokeCap={'round'}
+                    />
+                  </View>
+                  <View style={SSStyles.center}>
+                    <TouchableOpacity
+                      disabled={!this.state.buttonEnabled}
+                      zIndex={5}
+                      onPress={() => {
+                        if (this.manager.getStatus() === Status.READING) {
+                          this.manager.setStatus(Status.GETTING_BALANCE);
+                          this.setState({buttonEnabled: false});
+                        } else {
+                          this.setState({buttonText: 'Stop'});
+                          this.startAssessBalance();
+                        }
+                      }}
+                      style={
+                        !this.state.buttonEnabled
+                          ? SSStyles.disabledButton
+                          : SSStyles.roundButton
+                      }>
+                      <Text style={SSStyles.buttonText}>
+                        {this.state.buttonText}
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
               </Row>
               <Row size={1}>
