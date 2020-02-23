@@ -3,7 +3,7 @@ import React from 'react';
 import 'react-native-gesture-handler';
 import {NavigationContainer} from '@react-navigation/native';
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
-import {Icon, Root} from 'native-base';
+import {Icon} from 'native-base';
 
 import HomePage from './screens/home/main';
 import ExercisePage from './screens/exercise/main';
@@ -88,11 +88,9 @@ function MyTabs() {
 
 function App() {
   return (
-    <Root>
-      <NavigationContainer>
-        <MyTabs />
-      </NavigationContainer>
-    </Root>
+    <NavigationContainer>
+      <MyTabs />
+    </NavigationContainer>
   );
 }
 

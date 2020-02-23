@@ -32,7 +32,7 @@ class HomePage extends React.Component {
       Toast.show({
         text: errMsg,
         duration: 3000,
-        position: 'top',
+        position: 'center',
         type: 'danger',
       });
     });
@@ -60,7 +60,7 @@ class HomePage extends React.Component {
   }
 
   updateState = state => {
-    if (!this._isMounted) {
+    if (this._isMounted) {
       this.setState(state);
     }
   };
@@ -92,7 +92,7 @@ class HomePage extends React.Component {
     Toast.show({
       text: text,
       duration: duration,
-      position: 'top',
+      position: 'center',
       type: type,
     });
   };
@@ -102,7 +102,7 @@ class HomePage extends React.Component {
     this.manager.receiveNotifications().then(score => {
       this.updateState({balance: score});
       this.updateState({enabled: true});
-      this.updateState({buttonText: 'Assess Balance'});
+      this.updateState({buttonText: 'Start'});
       this.manager.setStatus(Status.CONNECTED);
     });
   }
@@ -118,7 +118,7 @@ class HomePage extends React.Component {
             }}>
             <Grid style={{padding: 20}}>
               <Row size={1}>
-                <H3>Your balance</H3>
+                <H3 style={{fontWeight: 'bold', color: SSColors.darkGray}}>Your balance</H3>
               </Row>
               <Row size={5}>
                 <View style={SSStyles.container}>

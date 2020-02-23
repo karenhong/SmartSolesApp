@@ -67,7 +67,9 @@ class HomeHeader extends React.Component {
         <Header span>
           <Body>
             <Text>{this.state.date}</Text>
-            <H1>Good morning, Annie.</H1>
+            <H1 style={{fontWeight: 'bold', color: SSColors.darkGray}}>
+              Good morning, Annie.
+            </H1>
           </Body>
           <Right>
             <Button transparent>
