@@ -28,39 +28,92 @@ export default class DeviceManager {
     this.statusEmitter.emit('changeStatus', status, extra);
   };
 
+  connectSmartSoles = () => {
+    return this.checkConnected().then(
+      connected => {
+        if (!connected) {
+          return this.scanAndConnect();
+        }
+      },
+      err => 'error checking connected ' + err,
+    );
+  };
+
   scanAndConnect = () => {
-    this.statusChange(Status.SCANNING, '');
-    this.bleManager.startDeviceScan(null, null, (error, device) => {
+    let discovered = [];
+    this.statusChange(Status.SCANNING);
+
+    return this.bleManager.startDeviceScan(null, null, (error, device) => {
       if (error) {
         this.error(error.message);
+        this.statusEmitter.emit('error', error.message);
         return;
       }
-
-      if (device && device.name && device.name.includes('SmartSole')) {
-        this.bleManager.stopDeviceScan();
-        device
-          .isConnected()
-          .then((connected, error) => {
-            if (!connected) {
-              return device.connect();
-            }
-            if (error) {
-              this.error(error.message);
-            }
-          })
-          .then(device => {
-            return device.discoverAllServicesAndCharacteristics();
-          })
-          .then(device => {
-            this.statusChange(Status.CONNECTED, device.name);
-            this.info(device.name + ' ready to receive data');
-            this.soles.add(device);
-            if (this.soles.connected()) {
-              this.bleManager.stopDeviceScan();
-            }
-          });
+      if (
+        device &&
+        device.name &&
+        device.name.includes('SmartSole') &&
+        !discovered.includes(device.id)
+      ) {
+        discovered.push(device.id);
+        return this.connectSole(device).then(
+          () => {},
+          err => this.statusEmitter.emit('error', err.message),
+        );
       }
     });
+  };
+
+  async checkConnected() {
+    try {
+      let devices = await this.bleManager.connectedDevices([this.serviceUUID]);
+      for (let device in devices) {
+        if (device.name.includes('SmartSole')) {
+          await this.connectSole(device);
+        }
+      }
+    } catch (err) {
+      this.statusEmitter.emit('error', err.message);
+    }
+    return Promise.resolve(this.soles.connected());
+  }
+
+  connectSole = device => {
+    return device
+      .isConnected()
+      .then(
+        (connected, error) => {
+          if (!connected) {
+            return device.connect();
+          }
+          if (error) {
+            this.error(error.message);
+          }
+          console.log(device.id + ' already connected');
+          return Promise.resolve(device);
+        },
+        err => this.statusEmitter.emit('error', err),
+      )
+      .then(
+        device => {
+          return device.discoverAllServicesAndCharacteristics();
+        },
+        err => this.statusEmitter.emit('error', err),
+      )
+      .then(
+        device => {
+          console.log(device.name + ' ready to receive data');
+          this.soles.add(device, this.statusEmitter);
+          if (this.soles.connected()) {
+            console.log('Stopped scanning');
+            this.statusChange(Status.CONNECTED, device.name);
+            this.bleManager.stopDeviceScan();
+          } else {
+            this.statusChange(Status.CONNECTING, device.name);
+          }
+        },
+        err => this.statusEmitter.emit('error', err),
+      );
   };
 
   async receiveNotifications() {
@@ -111,13 +164,5 @@ export default class DeviceManager {
     }
     console.log(fsrData);
     return fsrData;
-  }
-
-  info(message) {
-    console.log(message);
-  }
-
-  error(message) {
-    console.log('ERROR: ' + message);
   }
 }
