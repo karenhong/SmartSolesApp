@@ -12,6 +12,8 @@ import SSStyles from '../../styles/common-styles';
 import SSColors from '../../styles/colors';
 
 class HomePage extends React.Component {
+  _isMounted = false;
+
   constructor() {
     super();
     this.manager = new DeviceManager();
@@ -24,6 +26,8 @@ class HomePage extends React.Component {
   }
 
   componentDidMount() {
+    this._isMounted = true;
+
     this.errorListener = EventRegister.addEventListener('error', errMsg => {
       Toast.show({
         text: errMsg,
@@ -38,7 +42,7 @@ class HomePage extends React.Component {
     );
 
     this.dataListener = EventRegister.addEventListener('data', data => {
-      this.setState({data: data});
+      this.updateState({data: data});
     });
 
     this.manager.connectSmartSoles();
@@ -47,11 +51,19 @@ class HomePage extends React.Component {
   }
 
   componentWillUnmount(): void {
+    this._isMounted = false;
+
     Toast.toastInstance = null;
     EventRegister.removeEventListener(this.errorListener);
     EventRegister.removeEventListener(this.statusListener);
     EventRegister.removeEventListener(this.dataListener);
   }
+
+  updateState = state => {
+    if (!this._isMounted) {
+      this.setState(state);
+    }
+  };
 
   changeStatusToast = data => {
     let text = '';
@@ -61,7 +73,7 @@ class HomePage extends React.Component {
       case Status.CONNECTED:
         type = 'success';
         text = 'Connected to Smart Soles';
-        this.setState({enabled: true});
+        this.updateState({enabled: true});
         break;
       case Status.CONNECTING:
         type = 'success';
@@ -74,7 +86,7 @@ class HomePage extends React.Component {
       case Status.NOT_CONNECTED:
         type = 'danger';
         text = 'Lost connection to Smart Soles';
-        this.setState({enabled: false});
+        this.updateState({enabled: false});
         break;
     }
     Toast.show({
@@ -88,9 +100,9 @@ class HomePage extends React.Component {
   startAssessBalance() {
     this.manager.setStatus(Status.READING);
     this.manager.receiveNotifications().then(score => {
-      this.setState({balance: score});
-      this.setState({enabled: true});
-      this.setState({buttonText: 'Assess Balance'});
+      this.updateState({balance: score});
+      this.updateState({enabled: true});
+      this.updateState({buttonText: 'Assess Balance'});
       this.manager.setStatus(Status.CONNECTED);
     });
   }
@@ -129,9 +141,9 @@ class HomePage extends React.Component {
                       onPress={() => {
                         if (this.manager.getStatus() === Status.READING) {
                           this.manager.setStatus(Status.GETTING_BALANCE);
-                          this.setState({enabled: false});
+                          this.updateState({enabled: false});
                         } else {
-                          this.setState({buttonText: 'Stop'});
+                          this.updateState({buttonText: 'Stop'});
                           this.startAssessBalance();
                         }
                       }}
