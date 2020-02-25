@@ -1,12 +1,13 @@
 import React from 'react';
-import {View, Text, TouchableOpacity} from 'react-native';
-import {Container, Content, H3, Toast, Root} from 'native-base';
-import {Row, Grid} from 'react-native-easy-grid';
+import {View, Text, TouchableOpacity, Picker} from 'react-native';
+import {Container, Content, H3, Toast, Root, Input, Item} from 'native-base';
+import {Row, Col, Grid} from 'react-native-easy-grid';
 import {EventRegister} from 'react-native-event-listeners';
 import {Circle} from 'react-native-progress';
 
 import HomeHeader from './header';
 import DeviceManager from '../../bluetooth/DeviceManager';
+import NetworkManager from '../../bluetooth/NetworkManager';
 import {Status} from '../../bluetooth/Status';
 import SSStyles from '../../styles/common-styles';
 import SSColors from '../../styles/colors';
@@ -17,26 +18,25 @@ class HomePage extends React.Component {
   constructor() {
     super();
     this.manager = new DeviceManager();
+    this.networkManger = new NetworkManager();
     this.state = {
       enabled: false,
       connected: false,
       showToast: false,
       buttonText: 'Start',
       data: '',
+      label: '',
+      title: '',
     };
   }
 
   componentDidMount() {
     this._isMounted = true;
 
-    this.errorListener = EventRegister.addEventListener('error', errMsg => {
-      Toast.show({
-        text: errMsg,
-        duration: 3000,
-        position: 'center',
-        type: 'danger',
-      });
-    });
+    this.errorListener = EventRegister.addEventListener(
+      'error',
+      this.errorToast,
+    );
     this.statusListener = EventRegister.addEventListener(
       'changeStatus',
       this.changeStatusToast,
@@ -64,6 +64,16 @@ class HomePage extends React.Component {
     if (this._isMounted) {
       this.setState(state);
     }
+  };
+
+  errorToast = errMsg => {
+    console.log(errMsg);
+    Toast.show({
+      text: errMsg,
+      duration: 3000,
+      position: 'center',
+      type: 'danger',
+    });
   };
 
   changeStatusToast = data => {
@@ -100,15 +110,45 @@ class HomePage extends React.Component {
     });
   };
 
-  startAssessBalance() {
-    this.manager.setStatus(Status.READING);
-    this.manager.receiveNotifications().then(score => {
-      this.updateState({balance: score});
-      this.updateState({enabled: true});
-      this.updateState({buttonText: 'Start'});
-      this.manager.setStatus(Status.CONNECTED);
-    });
-  }
+  startAssessBalance = () => {
+    this.manager
+      .receiveNotifications()
+      .then(
+        fsrDataArr => {
+          return this.networkManger.getBalanceScore(fsrDataArr);
+        },
+        error => {
+          this.errorToast('getBalanceScore: ' + error.message);
+        },
+      )
+      .then(score => {
+        this.updateState({balance: score});
+        this.updateState({enabled: true});
+        this.updateState({buttonText: 'Start'});
+        this.manager.setStatus(Status.CONNECTED);
+      });
+  };
+
+  collectData = () => {
+    this.manager
+      .receiveNotifications()
+      .then(fsrDataArr => {
+        return this.networkManger.sendTestData(
+          this.state.title,
+          this.state.label,
+          fsrDataArr,
+        );
+      })
+      .then(() => {
+        Toast.show({
+          text: 'Data successfully uploaded',
+          duration: 3000,
+          position: 'center',
+          type: 'success',
+        });
+      })
+      .catch(error => this.errorToast(error.message));
+  };
 
   render() {
     return (
@@ -149,7 +189,8 @@ class HomePage extends React.Component {
                           this.updateState({enabled: false});
                         } else {
                           this.updateState({buttonText: 'Stop'});
-                          this.startAssessBalance();
+                          this.collectData();
+                          // this.startAssessBalance();
                         }
                       }}
                       style={
@@ -166,6 +207,30 @@ class HomePage extends React.Component {
               </Row>
               <Row size={1}>
                 <Text>{this.state.data}</Text>
+              </Row>
+              <Row size={1}>
+                <Col size={2}>
+                  <Picker
+                    selectedValue={this.state.title}
+                    style={{height: 50, width: '100%'}}
+                    onValueChange={(itemValue, itemIndex) =>
+                      this.updateState({title: itemValue})
+                    }>
+                    <Picker.Item label="HeelRaises" value="HeelRaises" />
+                    <Picker.Item label="RegularWalking" value="RegularWalking" />
+                  </Picker>
+                </Col>
+                <Col size={1}>
+                  <Picker
+                    selectedValue={this.state.label}
+                    style={{height: 50, width: '100%'}}
+                    onValueChange={(itemValue, itemIndex) =>
+                      this.updateState({label: itemValue})
+                    }>
+                    <Picker.Item label="Good" value="good" />
+                    <Picker.Item label="Bad" value="bad" />
+                  </Picker>
+                </Col>
               </Row>
             </Grid>
           </Content>

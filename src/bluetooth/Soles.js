@@ -1,5 +1,7 @@
 import {Device} from 'react-native-ble-plx';
 
+const TESTING_WITH_ONE = true;
+
 export default class Soles {
   left: Device;
   right: Device;
@@ -23,6 +25,9 @@ export default class Soles {
   }
 
   connected() {
+    if (TESTING_WITH_ONE) {
+      return !!(this.left || this.right);
+    }
     return !!(this.left && this.right);
   }
 

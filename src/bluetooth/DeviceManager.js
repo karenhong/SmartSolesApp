@@ -1,7 +1,6 @@
 import {BleManager} from 'react-native-ble-plx';
 import {EventRegister} from 'react-native-event-listeners';
 
-import NetworkManager from './NetworkManager';
 import Soles from './Soles';
 import {Buffer} from 'buffer';
 import {Status} from './Status';
@@ -9,7 +8,6 @@ import {Status} from './Status';
 export default class DeviceManager {
   constructor() {
     this.bleManager = new BleManager();
-    this.networkManger = new NetworkManager();
     this.soles = new Soles();
     this.state = {
       status: Status.NOT_CONNECTED,
@@ -64,7 +62,7 @@ export default class DeviceManager {
     return this.bleManager.startDeviceScan(null, null, (error, device) => {
       if (error) {
         console.log(error);
-        EventRegister.emit('error', error.message);
+        EventRegister.emit('error', 'startDeviceScan:' + error.message);
         return;
       }
       if (
@@ -84,7 +82,7 @@ export default class DeviceManager {
       let connected,
         err = await device.isConnected();
       if (err) {
-        EventRegister.emit('error', err.message);
+        EventRegister.emit('error', 'isConnected:' + err.message);
         return;
       }
       let connectedDev = device;
@@ -106,11 +104,12 @@ export default class DeviceManager {
         this.statusChange(Status.CONNECTING, device.name);
       }
     } catch (err) {
-      EventRegister.emit('error', err.message);
+      EventRegister.emit('error', 'connectSole: ' + err.message);
     }
   };
 
   receiveNotifications = async () => {
+    this.setStatus(Status.READING);
     let promises = [];
 
     const service = this.serviceUUID;
@@ -138,23 +137,19 @@ export default class DeviceManager {
         }),
       );
     });
-    return Promise.all(promises)
-      .then(
-        values => {
-          let fsrDataArr = {};
-          values.forEach(res => {
-            fsrDataArr[res.device.name] = res.data;
-          });
-          return this.networkManger.getBalanceScore(fsrDataArr);
-        },
-        error => {
-          EventRegister.emit('data', '');
-          EventRegister.emit('error', error.message);
-        },
-      )
-      .then(score => {
-        return Promise.resolve(score);
-      });
+    return Promise.all(promises).then(
+      values => {
+        let fsrDataArr = {};
+        values.forEach(res => {
+          fsrDataArr[res.device.name] = res.data;
+        });
+        return fsrDataArr;
+      },
+      err => {
+        EventRegister.emit('error', err.message);
+        EventRegister.emit('data', '');
+      },
+    );
   };
 
   getStatus = () => {
