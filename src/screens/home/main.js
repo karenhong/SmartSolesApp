@@ -125,14 +125,25 @@ class HomePage extends React.Component {
   collectData = () => {
     this.manager
       .receiveNotifications()
-      .then(fsrDataArr => {
-        return this.networkManger.sendTestData(
-          this.state.title,
-          this.state.label,
-          fsrDataArr,
-        );
-      })
+      .then(
+        fsrDataArr => {
+          return this.networkManger.sendTestData(
+            this.state.title,
+            this.state.label,
+            fsrDataArr,
+          );
+        },
+        err => {
+          this.errorToast(err.message);
+          this.updateState({enabled: true});
+          this.updateState({buttonText: 'Start'});
+          this.manager.setStatus(Status.CONNECTED);
+        },
+      )
       .then(() => {
+        this.updateState({enabled: true});
+        this.updateState({buttonText: 'Start'});
+        this.manager.setStatus(Status.CONNECTED);
         Toast.show({
           text: 'Data successfully uploaded',
           duration: 3000,
@@ -140,7 +151,12 @@ class HomePage extends React.Component {
           type: 'success',
         });
       })
-      .catch(error => this.errorToast(error.message));
+      .catch(error => {
+        this.errorToast(error.message);
+        this.updateState({enabled: true});
+        this.updateState({buttonText: 'Start'});
+        this.manager.setStatus(Status.CONNECTED);
+      });
   };
 
   render() {
@@ -162,7 +178,7 @@ class HomePage extends React.Component {
                 <View style={SSStyles.container}>
                   <View style={SSStyles.behind}>
                     <Circle
-                      size={280}
+                      size={230}
                       thickness={40}
                       indeterminate={false}
                       progress={this.state.balance}
@@ -178,8 +194,9 @@ class HomePage extends React.Component {
                       zIndex={5}
                       onPress={() => {
                         if (this.manager.getStatus() === Status.READING) {
-                          this.manager.setStatus(Status.GETTING_BALANCE);
+                          EventRegister.removeEventListener(this.dataListener);
                           this.updateState({enabled: false});
+                          this.manager.setStatus(Status.GETTING_BALANCE);
                         } else {
                           this.updateState({buttonText: 'Stop'});
                           this.startAssessBalance();
