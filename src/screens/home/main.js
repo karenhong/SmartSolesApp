@@ -1,7 +1,7 @@
 import React from 'react';
-import {View, Text, TouchableOpacity, Picker} from 'react-native';
-import {Container, Content, H3, Toast, Root, Input, Item} from 'native-base';
-import {Row, Col, Grid} from 'react-native-easy-grid';
+import {View, Text, TouchableOpacity} from 'react-native';
+import {Container, Content, H3, Toast, Root} from 'native-base';
+import {Row, Grid} from 'react-native-easy-grid';
 import {EventRegister} from 'react-native-event-listeners';
 import {Circle} from 'react-native-progress';
 
@@ -24,9 +24,7 @@ class HomePage extends React.Component {
       connected: false,
       showToast: false,
       buttonText: 'Start',
-      data: '',
-      label: '',
-      title: '',
+      balance: 0,
     };
   }
 
@@ -42,10 +40,6 @@ class HomePage extends React.Component {
       this.changeStatusToast,
     );
 
-    this.dataListener = EventRegister.addEventListener('data', data => {
-      this.updateState({data: data});
-    });
-
     this.manager.connectSmartSoles();
 
     this.changeStatusToast(Status.SCANNING);
@@ -57,7 +51,6 @@ class HomePage extends React.Component {
     Toast.toastInstance = null;
     EventRegister.removeEventListener(this.errorListener);
     EventRegister.removeEventListener(this.statusListener);
-    EventRegister.removeEventListener(this.dataListener);
   }
 
   updateState = state => {
@@ -165,14 +158,14 @@ class HomePage extends React.Component {
                   Your balance
                 </H3>
               </Row>
-              <Row size={5}>
+              <Row size={7}>
                 <View style={SSStyles.container}>
                   <View style={SSStyles.behind}>
                     <Circle
                       size={280}
                       thickness={40}
                       indeterminate={false}
-                      progress={0.2}
+                      progress={this.state.balance}
                       strokeCap={'round'}
                       color={SSColors.accent}
                       unfilledColor={SSColors.lightGray}
@@ -189,8 +182,7 @@ class HomePage extends React.Component {
                           this.updateState({enabled: false});
                         } else {
                           this.updateState({buttonText: 'Stop'});
-                          this.collectData();
-                          // this.startAssessBalance();
+                          this.startAssessBalance();
                         }
                       }}
                       style={
@@ -204,33 +196,6 @@ class HomePage extends React.Component {
                     </TouchableOpacity>
                   </View>
                 </View>
-              </Row>
-              <Row size={1}>
-                <Text>{this.state.data}</Text>
-              </Row>
-              <Row size={1}>
-                <Col size={2}>
-                  <Picker
-                    selectedValue={this.state.title}
-                    style={{height: 50, width: '100%'}}
-                    onValueChange={(itemValue, itemIndex) =>
-                      this.updateState({title: itemValue})
-                    }>
-                    <Picker.Item label="HeelRaises" value="HeelRaises" />
-                    <Picker.Item label="RegularWalking" value="RegularWalking" />
-                  </Picker>
-                </Col>
-                <Col size={1}>
-                  <Picker
-                    selectedValue={this.state.label}
-                    style={{height: 50, width: '100%'}}
-                    onValueChange={(itemValue, itemIndex) =>
-                      this.updateState({label: itemValue})
-                    }>
-                    <Picker.Item label="Good" value="good" />
-                    <Picker.Item label="Bad" value="bad" />
-                  </Picker>
-                </Col>
               </Row>
             </Grid>
           </Content>
