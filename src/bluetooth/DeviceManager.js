@@ -9,6 +9,7 @@ export default class DeviceManager {
   constructor() {
     this.bleManager = new BleManager();
     this.soles = new Soles();
+    this.index = 0;
     this.state = {
       status: Status.NOT_CONNECTED,
     };
@@ -111,12 +112,14 @@ export default class DeviceManager {
   receiveNotifications = async () => {
     this.setStatus(Status.READING);
     let promises = [];
+    let subs = [];
 
     const service = this.serviceUUID;
     const characteristicN = this.characteristicUUID;
 
     this.soles.getSoles().forEach(device => {
       let fsrData = [];
+
       promises.push(
         new Promise((resolve, reject) => {
           let sub = device.monitorCharacteristicForService(
@@ -124,16 +127,16 @@ export default class DeviceManager {
             characteristicN,
             (error, characteristic) => {
               if (error) {
-                return reject(error);
+                return reject({error: error, subscription: sub});
               }
               fsrData.push(this.parseNotification(characteristic.value));
               if (this.getStatus() !== Status.READING) {
-                sub.remove();
-                resolve({device: device, data: fsrData});
+                resolve({device: device, subscription: sub, data: fsrData});
                 EventRegister.emit('data', '');
               }
             },
           );
+          subs.push(sub);
         }),
       );
     });
@@ -143,11 +146,14 @@ export default class DeviceManager {
         values.forEach(res => {
           fsrDataArr[res.device.name] = res.data;
         });
+        subs.forEach(sub => sub.remove());
         return fsrDataArr;
       },
       err => {
-        EventRegister.emit('error', err.message);
+        EventRegister.emit('error', err.error.message);
         EventRegister.emit('data', '');
+        subs.forEach(sub => sub.remove());
+        err.subscription.remove();
       },
     );
   };
@@ -167,7 +173,10 @@ export default class DeviceManager {
       fsrData.push(byteBuf.readInt16LE(i));
     }
     console.log(fsrData);
-    EventRegister.emit('data', fsrData.toString());
+    if (!(this.index % 5)) {
+      EventRegister.emit('data', fsrData.toString());
+    }
+    this.index++;
     return fsrData;
   }
 }

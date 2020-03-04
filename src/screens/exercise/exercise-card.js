@@ -24,16 +24,16 @@ export default class ExerciseCard extends Component {
           <Card>
             <CardItem>
               <Left>
-                <Thumbnail source={{uri: 'Image URL'}} />
+                <Thumbnail source={{uri: '../../.resources/exercises/temp.png'}} />
                 <Body>
-                  <Text>NativeBase</Text>
-                  <Text note>GeekyAnts</Text>
+                  <Text>Exercise 1</Text>
+                  <Text note>Balance</Text>
                 </Body>
               </Left>
             </CardItem>
             <CardItem cardBody>
               <Image
-                source={{uri: 'Image URL'}}
+                source={{uri: '../../resources/exercises/temp.png'}}
                 style={{height: 200, width: null, flex: 1}}
               />
             </CardItem>

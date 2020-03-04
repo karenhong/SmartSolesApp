@@ -25,8 +25,8 @@ class HomePage extends React.Component {
       showToast: false,
       buttonText: 'Start',
       data: '',
-      label: '',
-      title: '',
+      label: 'good',
+      title: 'HeelRaises',
     };
   }
 
@@ -132,14 +132,25 @@ class HomePage extends React.Component {
   collectData = () => {
     this.manager
       .receiveNotifications()
-      .then(fsrDataArr => {
-        return this.networkManger.sendTestData(
-          this.state.title,
-          this.state.label,
-          fsrDataArr,
-        );
-      })
+      .then(
+        fsrDataArr => {
+          return this.networkManger.sendTestData(
+            this.state.title,
+            this.state.label,
+            fsrDataArr,
+          );
+        },
+        err => {
+          this.errorToast(err.message);
+          this.updateState({enabled: true});
+          this.updateState({buttonText: 'Start'});
+          this.manager.setStatus(Status.CONNECTED);
+        },
+      )
       .then(() => {
+        this.updateState({enabled: true});
+        this.updateState({buttonText: 'Start'});
+        this.manager.setStatus(Status.CONNECTED);
         Toast.show({
           text: 'Data successfully uploaded',
           duration: 3000,
@@ -147,7 +158,12 @@ class HomePage extends React.Component {
           type: 'success',
         });
       })
-      .catch(error => this.errorToast(error.message));
+      .catch(error => {
+        this.errorToast(error.message);
+        this.updateState({enabled: true});
+        this.updateState({buttonText: 'Start'});
+        this.manager.setStatus(Status.CONNECTED);
+      });
   };
 
   render() {
@@ -169,7 +185,7 @@ class HomePage extends React.Component {
                 <View style={SSStyles.container}>
                   <View style={SSStyles.behind}>
                     <Circle
-                      size={280}
+                      size={230}
                       thickness={40}
                       indeterminate={false}
                       progress={0.2}
@@ -185,11 +201,18 @@ class HomePage extends React.Component {
                       zIndex={5}
                       onPress={() => {
                         if (this.manager.getStatus() === Status.READING) {
-                          this.manager.setStatus(Status.GETTING_BALANCE);
+                          EventRegister.removeEventListener(this.dataListener);
                           this.updateState({enabled: false});
+                          this.manager.setStatus(Status.GETTING_BALANCE);
                         } else {
                           this.updateState({buttonText: 'Stop'});
                           this.collectData();
+                          this.dataListener = EventRegister.addEventListener(
+                            'data',
+                            data => {
+                              this.updateState({data: data});
+                            },
+                          );
                           // this.startAssessBalance();
                         }
                       }}
@@ -208,7 +231,7 @@ class HomePage extends React.Component {
               <Row size={1}>
                 <Text>{this.state.data}</Text>
               </Row>
-              <Row size={1}>
+              <Row size={5}>
                 <Col size={2}>
                   <Picker
                     selectedValue={this.state.title}
@@ -216,11 +239,15 @@ class HomePage extends React.Component {
                     onValueChange={(itemValue, itemIndex) =>
                       this.updateState({title: itemValue})
                     }>
-                    <Picker.Item label="HeelRaises" value="HeelRaises" />
-                    <Picker.Item label="RegularWalking" value="RegularWalking" />
+                    <Picker.Item label="Heel Raises" value="HeelRaises" />
+                    <Picker.Item
+                      label="Regular Walking"
+                      value="RegularWalking"
+                    />
+                    <Picker.Item label="Other" value="Other" />
                   </Picker>
                 </Col>
-                <Col size={1}>
+                <Col size={2}>
                   <Picker
                     selectedValue={this.state.label}
                     style={{height: 50, width: '100%'}}
