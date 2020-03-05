@@ -12,6 +12,8 @@ export default class NetworkManager {
       left: fsrData.SmartSoleL ? fsrData.SmartSoleL : [[]],
     });
 
+    console.log(jsonData);
+
     let response = await fetch(this.baseUrl, {
       method: 'POST',
       headers: {

@@ -48,7 +48,6 @@ class HomePage extends React.Component {
     );
 
     this.manager.connectSmartSoles();
-    this.updateState({enabled: true});
 
     this.changeStatusToast(Status.SCANNING);
   }
@@ -122,13 +121,19 @@ class HomePage extends React.Component {
         return this.networkManger.getBalanceScore(fsrDataArr);
       })
       .then(score => {
+        console.log('Score is: ' + score);
         this.updateState({enabled: true});
         this.updateState({buttonText: 'Start'});
         this.manager.setStatus(Status.CONNECTED);
+        if (this.state.mode === Mode.DEMO) {
+          this.updateState({balance: score});
+        }
         return score;
       })
       .catch(error => {
-        // this.errorToast(error.message);
+        if (this.state.mode === Mode.DEMO) {
+          this.errorToast(error.message);
+        }
         this.updateState({enabled: true});
         this.updateState({buttonText: 'Start'});
         this.manager.setStatus(Status.CONNECTED);
@@ -136,16 +141,16 @@ class HomePage extends React.Component {
       .finally(balance => {
         switch (this.state.mode) {
           case Mode.DEMO:
-            this.updateState({balance: balance});
+            this.updateState({balance: this.getRandomInt(0, 10) + balance});
             break;
           case Mode.TESTING_MODE_1:
             this.updateState({
-              balance: this.getRandomInt(40, 100),
+              balance: this.getRandomInt(70, 100),
             });
             break;
           case Mode.TESTING_MODE_2:
             this.updateState({
-              balance: this.getRandomInt(0, 60),
+              balance: this.getRandomInt(5, 40),
             });
             break;
         }
