@@ -7,23 +7,22 @@ export default class NetworkManager {
   }
 
   async getBalanceScore(fsrData) {
-    try {
-      let response = await fetch(this.baseUrl, {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          data: fsrData,
-        }),
-      });
-      let responseJson = await response.json();
-      return responseJson.result;
-    } catch (error) {
-      console.log(error);
-      return '... (there was an error, please try again';
-    }
+    let jsonData = JSON.stringify({
+      right: fsrData.SmartSoleR ? fsrData.SmartSoleR : [[]],
+      left: fsrData.SmartSoleL ? fsrData.SmartSoleL : [[]],
+    });
+
+    let response = await fetch(this.baseUrl, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: jsonData,
+    });
+
+    let responseJson = await response.json();
+    return responseJson.balance;
   }
 
   async sendTestData(title, label, fsrData) {

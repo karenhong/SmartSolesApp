@@ -4,7 +4,7 @@ import {
   Button,
   Icon,
   Right,
-  H1,
+  H2,
   Text,
   Body,
   StyleProvider,
@@ -67,9 +67,9 @@ class HomeHeader extends React.Component {
         <Header span>
           <Body>
             <Text>{this.state.date}</Text>
-            <H1 style={{fontWeight: 'bold', color: SSColors.darkGray}}>
-              Good morning, Annie.
-            </H1>
+            <H2 style={{fontWeight: 'bold', color: SSColors.darkGray}}>
+              Good afternoon, Annie.
+            </H2>
           </Body>
           <Right>
             <Button transparent>

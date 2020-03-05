@@ -40,7 +40,8 @@ class HomePage extends React.Component {
       this.changeStatusToast,
     );
 
-    this.manager.connectSmartSoles();
+    // this.manager.connectSmartSoles();
+    this.updateState({enabled: true});
 
     this.changeStatusToast(Status.SCANNING);
   }
@@ -106,16 +107,17 @@ class HomePage extends React.Component {
   startAssessBalance = () => {
     this.manager
       .receiveNotifications()
-      .then(
-        fsrDataArr => {
-          return this.networkManger.getBalanceScore(fsrDataArr);
-        },
-        error => {
-          this.errorToast('getBalanceScore: ' + error.message);
-        },
-      )
+      .then(fsrDataArr => {
+        return this.networkManger.getBalanceScore(fsrDataArr);
+      })
       .then(score => {
         this.updateState({balance: score});
+        this.updateState({enabled: true});
+        this.updateState({buttonText: 'Start'});
+        this.manager.setStatus(Status.CONNECTED);
+      })
+      .catch(error => {
+        this.errorToast(error.message);
         this.updateState({enabled: true});
         this.updateState({buttonText: 'Start'});
         this.manager.setStatus(Status.CONNECTED);
@@ -178,7 +180,7 @@ class HomePage extends React.Component {
                 <View style={SSStyles.container}>
                   <View style={SSStyles.behind}>
                     <Circle
-                      size={230}
+                      size={280}
                       thickness={40}
                       indeterminate={false}
                       progress={this.state.balance}
