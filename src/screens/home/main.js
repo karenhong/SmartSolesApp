@@ -1,7 +1,7 @@
 import React from 'react';
 import {View, Text, TouchableOpacity} from 'react-native';
-import {Container, Content, H3, Toast, Root} from 'native-base';
-import {Row, Grid} from 'react-native-easy-grid';
+import {Container, Content, H3, Form, Picker, Toast, Root} from 'native-base';
+import {Row, Grid, Col} from 'react-native-easy-grid';
 import {EventRegister} from 'react-native-event-listeners';
 import {Circle} from 'react-native-progress';
 
@@ -11,6 +11,12 @@ import NetworkManager from '../../bluetooth/NetworkManager';
 import {Status} from '../../bluetooth/Status';
 import SSStyles from '../../styles/common-styles';
 import SSColors from '../../styles/colors';
+
+const Mode = {
+  DEMO: 'demo',
+  TESTING_MODE_1: 'testing1',
+  TESTING_MODE_2: 'testing2',
+};
 
 class HomePage extends React.Component {
   _isMounted = false;
@@ -25,6 +31,7 @@ class HomePage extends React.Component {
       showToast: false,
       buttonText: 'Start',
       balance: 0,
+      mode: Mode.demo,
     };
   }
 
@@ -40,7 +47,7 @@ class HomePage extends React.Component {
       this.changeStatusToast,
     );
 
-    // this.manager.connectSmartSoles();
+    this.manager.connectSmartSoles();
     this.updateState({enabled: true});
 
     this.changeStatusToast(Status.SCANNING);
@@ -104,6 +111,10 @@ class HomePage extends React.Component {
     });
   };
 
+  getRandomInt = (min, max) => {
+    return (Math.floor(Math.random() * (max - min + 1)) + min) / 100;
+  };
+
   startAssessBalance = () => {
     this.manager
       .receiveNotifications()
@@ -111,16 +122,33 @@ class HomePage extends React.Component {
         return this.networkManger.getBalanceScore(fsrDataArr);
       })
       .then(score => {
-        this.updateState({balance: score});
+        this.updateState({enabled: true});
+        this.updateState({buttonText: 'Start'});
+        this.manager.setStatus(Status.CONNECTED);
+        return score;
+      })
+      .catch(error => {
+        // this.errorToast(error.message);
         this.updateState({enabled: true});
         this.updateState({buttonText: 'Start'});
         this.manager.setStatus(Status.CONNECTED);
       })
-      .catch(error => {
-        this.errorToast(error.message);
-        this.updateState({enabled: true});
-        this.updateState({buttonText: 'Start'});
-        this.manager.setStatus(Status.CONNECTED);
+      .finally(balance => {
+        switch (this.state.mode) {
+          case Mode.DEMO:
+            this.updateState({balance: balance});
+            break;
+          case Mode.TESTING_MODE_1:
+            this.updateState({
+              balance: this.getRandomInt(40, 100),
+            });
+            break;
+          case Mode.TESTING_MODE_2:
+            this.updateState({
+              balance: this.getRandomInt(0, 60),
+            });
+            break;
+        }
       });
   };
 
@@ -161,6 +189,12 @@ class HomePage extends React.Component {
       });
   };
 
+  onModeChanged(value: string) {
+    this.updateState({
+      mode: value,
+    });
+  }
+
   render() {
     return (
       <Root>
@@ -171,10 +205,31 @@ class HomePage extends React.Component {
               flex: 1,
             }}>
             <Grid style={{padding: 20}}>
-              <Row size={1}>
-                <H3 style={{fontWeight: 'bold', color: SSColors.darkGray}}>
-                  Your balance
-                </H3>
+              <Row size={2}>
+                <Col>
+                  <Form>
+                    <Picker
+                      mode="dropdown"
+                      style={{color: 'white'}}
+                      placeholder="Select Mode"
+                      selectedValue={this.state.mode}
+                      note={false}
+                      onValueChange={this.onModeChanged.bind(this)}>
+                      <Picker.Item label="Demo" value={Mode.DEMO} />
+                      <Picker.Item
+                        label="Testing Mode 1"
+                        value={Mode.TESTING_MODE_1}
+                      />
+                      <Picker.Item
+                        label="Testing Mode 2"
+                        value={Mode.TESTING_MODE_2}
+                      />
+                    </Picker>
+                  </Form>
+                  <H3 style={{fontWeight: 'bold', color: SSColors.darkGray}}>
+                    Your balance
+                  </H3>
+                </Col>
               </Row>
               <Row size={7}>
                 <View style={SSStyles.container}>
@@ -202,6 +257,7 @@ class HomePage extends React.Component {
                         } else {
                           this.updateState({buttonText: 'Stop'});
                           this.startAssessBalance();
+                          this.updateState({balance: 0});
                         }
                       }}
                       style={
