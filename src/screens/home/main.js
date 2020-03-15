@@ -1,6 +1,6 @@
 import React from 'react';
 import {View, Text, TouchableOpacity} from 'react-native';
-import {Container, Content, H3, Form, Picker, Toast, Root} from 'native-base';
+import {Container, Content, H3, Toast, Root} from 'native-base';
 import {Row, Grid, Col} from 'react-native-easy-grid';
 import {EventRegister} from 'react-native-event-listeners';
 import {Circle} from 'react-native-progress';
@@ -11,12 +11,6 @@ import NetworkManager from '../../bluetooth/NetworkManager';
 import {Status} from '../../bluetooth/Status';
 import SSStyles from '../../styles/common-styles';
 import SSColors from '../../styles/colors';
-
-const Mode = {
-  DEMO: 'demo',
-  TESTING_MODE_1: 'testing1',
-  TESTING_MODE_2: 'testing2',
-};
 
 class HomePage extends React.Component {
   _isMounted = false;
@@ -31,7 +25,6 @@ class HomePage extends React.Component {
       showToast: false,
       buttonText: 'Start',
       balance: 0,
-      mode: Mode.demo,
     };
   }
 
@@ -110,10 +103,6 @@ class HomePage extends React.Component {
     });
   };
 
-  getRandomInt = (min, max) => {
-    return (Math.floor(Math.random() * (max - min + 1)) + min) / 100;
-  };
-
   startAssessBalance = () => {
     this.manager
       .receiveNotifications()
@@ -125,80 +114,17 @@ class HomePage extends React.Component {
         this.updateState({enabled: true});
         this.updateState({buttonText: 'Start'});
         this.manager.setStatus(Status.CONNECTED);
-        if (this.state.mode === Mode.DEMO) {
-          this.updateState({balance: score});
-        }
+        this.updateState({balance: score});
         return score;
       })
       .catch(error => {
-        if (this.state.mode === Mode.DEMO) {
-          this.errorToast(error.message);
-        }
-        this.updateState({enabled: true});
-        this.updateState({buttonText: 'Start'});
-        this.manager.setStatus(Status.CONNECTED);
-      })
-      .finally(balance => {
-        switch (this.state.mode) {
-          case Mode.DEMO:
-            this.updateState({balance: this.getRandomInt(0, 10) + balance});
-            break;
-          case Mode.TESTING_MODE_1:
-            this.updateState({
-              balance: this.getRandomInt(70, 100),
-            });
-            break;
-          case Mode.TESTING_MODE_2:
-            this.updateState({
-              balance: this.getRandomInt(5, 40),
-            });
-            break;
-        }
-      });
-  };
-
-  collectData = () => {
-    this.manager
-      .receiveNotifications()
-      .then(
-        fsrDataArr => {
-          return this.networkManger.sendTestData(
-            this.state.title,
-            this.state.label,
-            fsrDataArr,
-          );
-        },
-        err => {
-          this.errorToast(err.message);
-          this.updateState({enabled: true});
-          this.updateState({buttonText: 'Start'});
-          this.manager.setStatus(Status.CONNECTED);
-        },
-      )
-      .then(() => {
-        this.updateState({enabled: true});
-        this.updateState({buttonText: 'Start'});
-        this.manager.setStatus(Status.CONNECTED);
-        Toast.show({
-          text: 'Data successfully uploaded',
-          duration: 3000,
-          position: 'center',
-          type: 'success',
-        });
-      })
-      .catch(error => {
-        this.errorToast(error.message);
+        console.log(error.message);
+        this.errorToast('Not enough data was collected');
         this.updateState({enabled: true});
         this.updateState({buttonText: 'Start'});
         this.manager.setStatus(Status.CONNECTED);
       });
   };
-
-  onModeChanged(value: string) {
-    this.updateState({
-      mode: value,
-    });
-  }
 
   render() {
     return (
@@ -210,33 +136,14 @@ class HomePage extends React.Component {
               flex: 1,
             }}>
             <Grid style={{padding: 20}}>
-              <Row size={2}>
+              <Row size={1}>
                 <Col>
-                  <Form>
-                    <Picker
-                      mode="dropdown"
-                      style={{color: 'white'}}
-                      placeholder="Select Mode"
-                      selectedValue={this.state.mode}
-                      note={false}
-                      onValueChange={this.onModeChanged.bind(this)}>
-                      <Picker.Item label="Demo" value={Mode.DEMO} />
-                      <Picker.Item
-                        label="Testing Mode 1"
-                        value={Mode.TESTING_MODE_1}
-                      />
-                      <Picker.Item
-                        label="Testing Mode 2"
-                        value={Mode.TESTING_MODE_2}
-                      />
-                    </Picker>
-                  </Form>
                   <H3 style={{fontWeight: 'bold', color: SSColors.darkGray}}>
                     Your balance
                   </H3>
                 </Col>
               </Row>
-              <Row size={7}>
+              <Row size={6}>
                 <View style={SSStyles.container}>
                   <View style={SSStyles.behind}>
                     <Circle
