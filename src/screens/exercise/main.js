@@ -2,26 +2,32 @@ import React from 'react';
 
 import ExerciseHeader from './header';
 import ExerciseCard from './exercise-card';
+import Paginator from './paginator';
 
-import {FlatList, Text} from 'react-native';
+import {Dimensions, View} from 'react-native';
 import {Container} from 'native-base';
+import {Row, Grid} from 'react-native-easy-grid';
 
 const exercises = [
   {
-    text: 'Tippy Toes',
-    name: 'One',
+    title: 'Tippy-toes balance',
+    type: 'Balance and Strengthening',
+    imageUrl: require('../../../resources/exercises/tippy-toes-still.png'),
   },
   {
-    text: 'Card One',
-    name: 'One',
+    title: 'Something',
+    type: 'Balance and Strengthening',
+    imageUrl: require('../../../resources/exercises/temp.png'),
   },
 ];
+
+const itemWidth = Dimensions.get('window').width;
 
 class ExercisePage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: exercises,
+      exercises: exercises,
     };
   }
 
@@ -29,20 +35,35 @@ class ExercisePage extends React.Component {
     return (
       <Container>
         <ExerciseHeader />
-        <FlatList
-          horizontal
-          data={this.state.data}
-          renderItem={({item: rowData}) => {
-            return (
-              <ExerciseCard
-                title={null}
-                image={{uri: rowData.imageUrl}}>
-                <Text style={{marginBottom: 10}}>{rowData.title}</Text>
-              </ExerciseCard>
-            );
-          }}
-          keyExtractor={(item, index) => index}
-        />
+        <Grid>
+          <Row size={2}>
+            <View style={{flex: 1}}>
+              <Paginator
+                data={this.state.exercises}
+                renderItem={({item: rowData}) => {
+                  return (
+                    <View
+                      style={{
+                        width: itemWidth,
+                        paddingLeft: 20,
+                        paddingRight: 20,
+                        paddingTop: 20,
+                      }}>
+                      <ExerciseCard
+                        title={rowData.title}
+                        imageUrl={rowData.imageUrl}
+                        type={rowData.type}
+                      />
+                    </View>
+                  );
+                }}
+                keyExtractor={(item, index) => index}
+                itemWidth={itemWidth}
+              />
+            </View>
+          </Row>
+          <Row size={1} />
+        </Grid>
       </Container>
     );
   }
