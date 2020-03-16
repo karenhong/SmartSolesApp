@@ -16,7 +16,7 @@ class HomePage extends React.Component {
   constructor(props) {
     super(props);
     this.manager = this.props.deviceManager;
-    this.errorToast = this.props.errorToast;
+    // this.errorToast = this.props.errorToast;
     this.networkManger = new NetworkManager();
     this.state = {
       enabled: false,
@@ -48,7 +48,7 @@ class HomePage extends React.Component {
       })
       .catch(error => {
         console.log(error.message);
-        this.errorToast('Not enough data was collected');
+        // this.errorToast('Not enough data was collected');
         this.updateState({enabled: true});
         this.updateState({buttonText: 'Start'});
         this.manager.setStatus(Status.CONNECTED);

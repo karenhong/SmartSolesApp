@@ -158,7 +158,7 @@ class MainApp extends React.Component {
             contentContainerStyle={{
               flex: 1,
             }}>
-            <HomeHeader connected={this.state.connected}/>
+            <HomeHeader connected={this.state.connected} />
             <View style={SSStyles.shadow} />
             <MyTabs />
           </Content>
