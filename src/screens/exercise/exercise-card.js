@@ -1,21 +1,14 @@
 import React, {Component} from 'react';
-import {Image, Row, Grid} from 'react-native';
-import SSColors from '../../styles/colors';
+import {Image, TouchableOpacity} from 'react-native';
+
 import {
   Container,
-  Header,
   Content,
   Card,
   CardItem,
-  Thumbnail,
   Text,
   H2,
-  H3,
   Button,
-  Icon,
-  Left,
-  Body,
-  Right,
 } from 'native-base';
 
 export default class ExerciseCard extends Component {
@@ -27,22 +20,26 @@ export default class ExerciseCard extends Component {
     return (
       <Container>
         <Content>
-          <Card>
-            <CardItem cardBody>
-              <Image
-                source={this.props.imageUrl}
-                style={{height: 200, width: 500, flex: 1}}
-              />
-            </CardItem>
-            <CardItem>
-              <H2>{this.props.title}</H2>
-            </CardItem>
-            <CardItem>
-              <H3 style={{backgroundColor: SSColors.lighter}}>
-                {this.props.type}
-              </H3>
-            </CardItem>
-          </Card>
+          <TouchableOpacity
+            activeOpacity={100}
+            onPress={() => console.log('tapped')}>
+            <Card>
+              <CardItem cardBody>
+                <Image
+                  source={this.props.imageUrl}
+                  style={{height: 200, width: 500, flex: 1}}
+                />
+              </CardItem>
+              <CardItem>
+                <H2>{this.props.title}</H2>
+              </CardItem>
+              <CardItem>
+                <Button rounded accent>
+                  <Text>{this.props.type}</Text>
+                </Button>
+              </CardItem>
+            </Card>
+          </TouchableOpacity>
         </Content>
       </Container>
     );

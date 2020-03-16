@@ -5,8 +5,7 @@ import {Row, Grid, Col} from 'react-native-easy-grid';
 import {EventRegister} from 'react-native-event-listeners';
 import {Circle} from 'react-native-progress';
 
-import HomeHeader from './header';
-import DeviceManager from '../../bluetooth/DeviceManager';
+import HomeHeader from '../../header';
 import NetworkManager from '../../bluetooth/NetworkManager';
 import {Status} from '../../bluetooth/Status';
 import SSStyles from '../../styles/common-styles';
@@ -15,9 +14,9 @@ import SSColors from '../../styles/colors';
 class HomePage extends React.Component {
   _isMounted = false;
 
-  constructor() {
-    super();
-    this.manager = new DeviceManager();
+  constructor(props) {
+    super(props);
+    this.manager = this.props.deviceManager;
     this.networkManger = new NetworkManager();
     this.state = {
       enabled: false,

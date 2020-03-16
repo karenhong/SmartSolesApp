@@ -5,8 +5,9 @@ import ExerciseCard from './exercise-card';
 import Paginator from './paginator';
 
 import {Dimensions, View} from 'react-native';
-import {Container} from 'native-base';
+import {Container, H3} from 'native-base';
 import {Row, Grid} from 'react-native-easy-grid';
+import SSColors from '../../styles/colors';
 
 const exercises = [
   {
@@ -35,8 +36,13 @@ class ExercisePage extends React.Component {
     return (
       <Container>
         <ExerciseHeader />
-        <Grid>
-          <Row size={2}>
+        <Grid style={{padding: 20}}>
+          <Row size={1}>
+            <H3 style={{fontWeight: 'bold', color: SSColors.darkGray}}>
+              Exercises
+            </H3>
+          </Row>
+          <Row size={10}>
             <View style={{flex: 1}}>
               <Paginator
                 data={this.state.exercises}
@@ -62,7 +68,7 @@ class ExercisePage extends React.Component {
               />
             </View>
           </Row>
-          <Row size={1} />
+            <Row size={2}/>
         </Grid>
       </Container>
     );

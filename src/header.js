@@ -9,9 +9,9 @@ import {
   Body,
   StyleProvider,
 } from 'native-base';
-import getTheme from '../../../native-base-theme/components';
-import material from '../../../native-base-theme/variables/smartSole';
-import SSColors from '../../styles/colors';
+import getTheme from '../native-base-theme/components';
+import material from '../native-base-theme/variables/smartSole';
+import SSColors from './styles/colors';
 
 class HomeHeader extends React.Component {
   constructor(props) {

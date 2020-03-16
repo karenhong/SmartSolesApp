@@ -9,8 +9,19 @@ import HomePage from './screens/home/main';
 import ExercisePage from './screens/exercise/main';
 
 import SSColors from './styles/colors.js';
+import DeviceManager from './bluetooth/DeviceManager';
 
 const Tab = createMaterialBottomTabNavigator();
+
+const deviceManager = new DeviceManager();
+
+function HomeScreen({navigation}) {
+  return <HomePage deviceManager={deviceManager} />;
+}
+
+function ExerciseScreen({navigation}) {
+  return <ExercisePage deviceManager={deviceManager} />;
+}
 
 function MyTabs() {
   return (
@@ -23,7 +34,7 @@ function MyTabs() {
       barStyle={{backgroundColor: SSColors.background, padding: 5}}>
       <Tab.Screen
         name="Feed"
-        component={HomePage}
+        component={HomeScreen}
         options={{
           tabBarLabel: 'Home',
           tabBarIcon: ({color, size}) => (
@@ -38,7 +49,7 @@ function MyTabs() {
       />
       <Tab.Screen
         name="Exercise"
-        component={ExercisePage}
+        component={ExerciseScreen}
         options={{
           tabBarLabel: 'Exercise',
           tabBarIcon: ({color, size}) => (
