@@ -85,6 +85,12 @@ const commonStyles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  shadow: {
+    height: 3,
+    width: '100%',
+    backgroundColor: SSColors.Gray,
+    zIndex: 99,
+  },
 });
 
 export default commonStyles;

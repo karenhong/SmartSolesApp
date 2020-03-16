@@ -12,6 +12,9 @@ import {
 } from 'native-base';
 
 export default class ExerciseCard extends Component {
+  // https://www.youtube.com/watch?v=9hRRbq6wjKo
+  // https://www.youtube.com/watch?v=i0uao-VKw9Q
+
   constructor(props) {
     super(props);
   }
