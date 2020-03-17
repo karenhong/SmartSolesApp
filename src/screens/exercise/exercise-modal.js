@@ -1,21 +1,12 @@
 import React, {Component} from 'react';
-import {Modal, Text, StyleSheet} from 'react-native';
+import {Modal, Image, StyleSheet} from 'react-native';
 import {Icon} from 'native-base';
 import {Button, Container} from 'native-base';
-import {Row} from 'react-native-easy-grid';
+import {Row, Col} from 'react-native-easy-grid';
 import Video from 'react-native-video';
 
 import SSColors from '../../styles/colors';
-
-var styles = StyleSheet.create({
-  backgroundVideo: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    bottom: 0,
-    right: 0,
-  },
-});
+import styles from '../../styles/soles-styles';
 
 export default class ExerciseModal extends Component {
   render() {
@@ -52,12 +43,52 @@ export default class ExerciseModal extends Component {
               }} // Store reference
               onBuffer={this.onBuffer} // Callback when remote video is buffering
               onError={this.videoError} // Callback when video cannot be loaded
-              // Later on in your styles..
               style={styles.backgroundVideo}
             />
           </Row>
           <Row>
-            <Text>World</Text>
+            <Col />
+            <Col>
+              <Container style={styles.leftSole}>
+                <Image
+                  source={require('../../../resources/soles/left/top.png')}
+                  style={styles.ltop}
+                />
+                <Image
+                  source={require('../../../resources/soles/left/left.png')}
+                  style={styles.lleft}
+                />
+                <Image
+                  source={require('../../../resources/soles/left/right.png')}
+                  style={styles.lright}
+                />
+                <Image
+                  source={require('../../../resources/soles/left/bottom.png')}
+                  style={styles.lbottom}
+                />
+              </Container>
+            </Col>
+            <Col>
+              <Container style={styles.rightSole}>
+                <Image
+                  source={require('../../../resources/soles/right/top.png')}
+                  style={styles.rtop}
+                />
+                <Image
+                  source={require('../../../resources/soles/right/left.png')}
+                  style={styles.rleft}
+                />
+                <Image
+                  source={require('../../../resources/soles/right/right.png')}
+                  style={styles.rright}
+                />
+                <Image
+                  source={require('../../../resources/soles/right/bottom.png')}
+                  style={styles.rbottom}
+                />
+              </Container>
+            </Col>
+            <Col />
           </Row>
         </Container>
       </Modal>
