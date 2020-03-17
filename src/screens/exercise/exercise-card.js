@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Image, Modal, TouchableOpacity} from 'react-native';
+import {Image, TouchableOpacity} from 'react-native';
 
 import ExerciseModal from './exercise-modal';
 
