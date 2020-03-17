@@ -44,7 +44,7 @@ export default class ExerciseCard extends Component {
                 <H2>{this.props.title}</H2>
               </CardItem>
               <CardItem>
-                <Button rounded accent>
+                <Button rounded info>
                   <Text>{this.props.type}</Text>
                 </Button>
               </CardItem>
@@ -53,6 +53,7 @@ export default class ExerciseCard extends Component {
           <ExerciseModal
             modalVisible={this.state.modalVisible}
             setModalVisible={this.setModalVisible}
+            videoUrl={this.props.videoUrl}
           />
         </Content>
       </Container>

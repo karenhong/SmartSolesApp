@@ -1,10 +1,21 @@
 import React, {Component} from 'react';
-import {Modal, Text, TouchableHighlight, View} from 'react-native';
+import {Modal, Text, StyleSheet} from 'react-native';
 import {Icon} from 'native-base';
-import {Button, Container, H3} from 'native-base';
-import {Row, Grid} from 'react-native-easy-grid';
+import {Button, Container} from 'native-base';
+import {Row} from 'react-native-easy-grid';
+import Video from 'react-native-video';
 
 import SSColors from '../../styles/colors';
+
+var styles = StyleSheet.create({
+  backgroundVideo: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0,
+  },
+});
 
 export default class ExerciseModal extends Component {
   render() {
@@ -17,7 +28,7 @@ export default class ExerciseModal extends Component {
           this.props.setModalVisible(!this.props.modalVisible);
         }}>
         <Container>
-          <Row style={{height: 45}}>
+          <Row style={{height: 55}}>
             <Button
               transparent
               light
@@ -34,7 +45,16 @@ export default class ExerciseModal extends Component {
             </Button>
           </Row>
           <Row>
-            <Text>Hello</Text>
+            <Video
+              source={this.props.videoUrl}
+              ref={ref => {
+                this.player = ref;
+              }} // Store reference
+              onBuffer={this.onBuffer} // Callback when remote video is buffering
+              onError={this.videoError} // Callback when video cannot be loaded
+              // Later on in your styles..
+              style={styles.backgroundVideo}
+            />
           </Row>
           <Row>
             <Text>World</Text>

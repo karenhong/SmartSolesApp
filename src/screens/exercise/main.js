@@ -10,16 +10,16 @@ import SSColors from '../../styles/colors';
 
 const exercises = [
   {
-    title: 'Tippy-toes balance',
+    title: 'Heel Raises',
     type: 'Balance and Strengthening',
     imageUrl: require('../../../resources/exercises/tippy-toes-still.png'),
-    videoUrl: 'https://www.youtube.com/watch?v=9hRRbq6wjKo',
+    videoUrl: require('../../../resources/exercises/heel-raises.mp4'),
   },
   {
     title: 'The Stork Step',
     type: 'Balance and Strengthening',
     imageUrl: require('../../../resources/exercises/stork-step-still.png'),
-    videoUrl: 'https://www.youtube.com/watch?v=i0uao-VKw9Q',
+    videoUrl: require('../../../resources/exercises/the-stork-step.mp4'),
   },
 ];
 
@@ -59,6 +59,7 @@ class ExercisePage extends React.Component {
                         title={rowData.title}
                         imageUrl={rowData.imageUrl}
                         type={rowData.type}
+                        videoUrl={rowData.videoUrl}
                       />
                     </View>
                   );
