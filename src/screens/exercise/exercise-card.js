@@ -1,12 +1,7 @@
 import React, {Component} from 'react';
-import {
-  Alert,
-  Image,
-  Modal,
-  TouchableHighlight,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {Image, Modal, TouchableOpacity} from 'react-native';
+
+import ExerciseModal from './exercise-modal';
 
 import {
   Container,
@@ -19,9 +14,6 @@ import {
 } from 'native-base';
 
 export default class ExerciseCard extends Component {
-  // https://www.youtube.com/watch?v=9hRRbq6wjKo
-  // https://www.youtube.com/watch?v=i0uao-VKw9Q
-
   state = {
     modalVisible: false,
   };
@@ -30,9 +22,9 @@ export default class ExerciseCard extends Component {
     super(props);
   }
 
-  setModalVisible(visible) {
+  setModalVisible = visible => {
     this.setState({modalVisible: visible});
-  }
+  };
 
   render() {
     return (
@@ -58,26 +50,10 @@ export default class ExerciseCard extends Component {
               </CardItem>
             </Card>
           </TouchableOpacity>
-          <Modal
-            animationType="slide"
-            transparent={false}
-            visible={this.state.modalVisible}
-            onRequestClose={() => {
-              Alert.alert('Modal has been closed.');
-            }}>
-            <View style={{marginTop: 22}}>
-              <View>
-                <Text>Hello World!</Text>
-
-                <TouchableHighlight
-                  onPress={() => {
-                    this.setModalVisible(!this.state.modalVisible);
-                  }}>
-                  <Text>Hide Modal</Text>
-                </TouchableHighlight>
-              </View>
-            </View>
-          </Modal>
+          <ExerciseModal
+            modalVisible={this.state.modalVisible}
+            setModalVisible={this.setModalVisible}
+          />
         </Content>
       </Container>
     );

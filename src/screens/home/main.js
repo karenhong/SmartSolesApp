@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, TouchableOpacity} from 'react-native';
+import {Alert, View, Text, TouchableOpacity} from 'react-native';
 import {H3} from 'native-base';
 import {Row, Grid, Col} from 'react-native-easy-grid';
 import {EventRegister} from 'react-native-event-listeners';
@@ -16,7 +16,6 @@ class HomePage extends React.Component {
   constructor(props) {
     super(props);
     this.manager = this.props.deviceManager;
-    // this.errorToast = this.props.errorToast;
     this.networkManger = new NetworkManager();
     this.state = {
       enabled: false,
@@ -48,7 +47,7 @@ class HomePage extends React.Component {
       })
       .catch(error => {
         console.log(error.message);
-        // this.errorToast('Not enough data was collected');
+        Alert.alert('Not enough data was collected.');
         this.updateState({enabled: true});
         this.updateState({buttonText: 'Start'});
         this.manager.setStatus(Status.CONNECTED);

@@ -13,11 +13,13 @@ const exercises = [
     title: 'Tippy-toes balance',
     type: 'Balance and Strengthening',
     imageUrl: require('../../../resources/exercises/tippy-toes-still.png'),
+    videoUrl: 'https://www.youtube.com/watch?v=9hRRbq6wjKo',
   },
   {
     title: 'The Stork Step',
     type: 'Balance and Strengthening',
     imageUrl: require('../../../resources/exercises/stork-step-still.png'),
+    videoUrl: 'https://www.youtube.com/watch?v=i0uao-VKw9Q',
   },
 ];
 
