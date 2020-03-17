@@ -54,6 +54,7 @@ export default class ExerciseCard extends Component {
             modalVisible={this.state.modalVisible}
             setModalVisible={this.setModalVisible}
             videoUrl={this.props.videoUrl}
+            deviceManger={this.props.deviceManager}
           />
         </Content>
       </Container>

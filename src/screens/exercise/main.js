@@ -60,6 +60,7 @@ class ExercisePage extends React.Component {
                         imageUrl={rowData.imageUrl}
                         type={rowData.type}
                         videoUrl={rowData.videoUrl}
+                        deviceManager={this.props.deviceManager}
                       />
                     </View>
                   );
