@@ -1,6 +1,6 @@
 import {Device} from 'react-native-ble-plx';
 
-const TESTING_WITH_ONE = false;
+const TESTING_WITH_ONE = true;
 
 export default class Soles {
   left: Device;

@@ -52,36 +52,36 @@ function MyTabs() {
           ),
         }}
       />
-      <Tab.Screen
-        name="Progress"
-        component={ProgressPage}
-        options={{
-          tabBarLabel: 'Progress',
-          tabBarIcon: ({color, size}) => (
-            <Icon
-              style={[{color: color}]}
-              type="FontAwesome"
-              size={size}
-              name="sliders"
-            />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Profile"
-        component={ProgressPage}
-        options={{
-          tabBarLabel: 'Profile',
-          tabBarIcon: ({color, size}) => (
-            <Icon
-              style={[{color: color}]}
-              type="MaterialIcons"
-              size={size}
-              name="person"
-            />
-          ),
-        }}
-      />
+    {/*  <Tab.Screen*/}
+    {/*    name="Progress"*/}
+    {/*    component={ProgressPage}*/}
+    {/*    options={{*/}
+    {/*      tabBarLabel: 'Progress',*/}
+    {/*      tabBarIcon: ({color, size}) => (*/}
+    {/*        <Icon*/}
+    {/*          style={[{color: color}]}*/}
+    {/*          type="FontAwesome"*/}
+    {/*          size={size}*/}
+    {/*          name="sliders"*/}
+    {/*        />*/}
+    {/*      ),*/}
+    {/*    }}*/}
+    {/*  />*/}
+    {/*  <Tab.Screen*/}
+    {/*    name="Profile"*/}
+    {/*    component={ProgressPage}*/}
+    {/*    options={{*/}
+    {/*      tabBarLabel: 'Profile',*/}
+    {/*      tabBarIcon: ({color, size}) => (*/}
+    {/*        <Icon*/}
+    {/*          style={[{color: color}]}*/}
+    {/*          type="MaterialIcons"*/}
+    {/*          size={size}*/}
+    {/*          name="person"*/}
+    {/*        />*/}
+    {/*      ),*/}
+    {/*    }}*/}
+    {/*  />*/}
     </Tab.Navigator>
   );
 }

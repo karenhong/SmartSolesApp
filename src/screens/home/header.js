@@ -68,7 +68,7 @@ class HomeHeader extends React.Component {
           <Body>
             <Text>{this.state.date}</Text>
             <H2 style={{fontWeight: 'bold', color: SSColors.darkGray}}>
-              Good afternoon, Annie.
+              Good morning, Annie.
             </H2>
           </Body>
           <Right>

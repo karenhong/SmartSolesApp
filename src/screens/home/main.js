@@ -31,7 +31,7 @@ class HomePage extends React.Component {
       showToast: false,
       buttonText: 'Start',
       balance: 0,
-      mode: Mode.demo,
+      mode: Mode.TESTING_MODE_1,
     };
   }
 
@@ -210,27 +210,27 @@ class HomePage extends React.Component {
               flex: 1,
             }}>
             <Grid style={{padding: 20}}>
-              <Row size={2}>
+              <Row size={1}>
                 <Col>
-                  <Form>
-                    <Picker
-                      mode="dropdown"
-                      style={{color: 'white'}}
-                      placeholder="Select Mode"
-                      selectedValue={this.state.mode}
-                      note={false}
-                      onValueChange={this.onModeChanged.bind(this)}>
-                      <Picker.Item label="Demo" value={Mode.DEMO} />
-                      <Picker.Item
-                        label="Testing Mode 1"
-                        value={Mode.TESTING_MODE_1}
-                      />
-                      <Picker.Item
-                        label="Testing Mode 2"
-                        value={Mode.TESTING_MODE_2}
-                      />
-                    </Picker>
-                  </Form>
+                  {/*<Form>*/}
+                  {/*  <Picker*/}
+                  {/*    mode="dropdown"*/}
+                  {/*    style={{color: 'white'}}*/}
+                  {/*    placeholder="Select Mode"*/}
+                  {/*    selectedValue={this.state.mode}*/}
+                  {/*    note={false}*/}
+                  {/*    onValueChange={this.onModeChanged.bind(this)}>*/}
+                  {/*    <Picker.Item label="Demo" value={Mode.DEMO} />*/}
+                  {/*    <Picker.Item*/}
+                  {/*      label="Testing Mode 1"*/}
+                  {/*      value={Mode.TESTING_MODE_1}*/}
+                  {/*    />*/}
+                  {/*    <Picker.Item*/}
+                  {/*      label="Testing Mode 2"*/}
+                  {/*      value={Mode.TESTING_MODE_2}*/}
+                  {/*    />*/}
+                  {/*  </Picker>*/}
+                  {/*</Form>*/}
                   <H3 style={{fontWeight: 'bold', color: SSColors.darkGray}}>
                     Your balance
                   </H3>
