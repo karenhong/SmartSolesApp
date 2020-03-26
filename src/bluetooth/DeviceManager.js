@@ -129,10 +129,11 @@ export default class DeviceManager {
               if (error) {
                 return reject({error: error, subscription: sub});
               }
-              fsrData.push(this.parseNotification(characteristic.value));
+              fsrData.push(
+                this.parseNotification(device.name, characteristic.value),
+              );
               if (this.getStatus() !== Status.READING) {
                 resolve({device: device, subscription: sub, data: fsrData});
-                EventRegister.emit('data', '');
               }
             },
           );
@@ -151,7 +152,6 @@ export default class DeviceManager {
       },
       err => {
         EventRegister.emit('error', err.error.message);
-        EventRegister.emit('data', '');
         subs.forEach(sub => sub.remove());
         err.subscription.remove();
       },
@@ -166,15 +166,15 @@ export default class DeviceManager {
     this.state.status = status;
   };
 
-  parseNotification(encodedBuf) {
+  parseNotification(name, encodedBuf) {
     let fsrData = [];
     let byteBuf = Buffer.from(encodedBuf, 'base64');
     for (let i = 0; i < byteBuf.length - 1; i += 2) {
       fsrData.push(byteBuf.readInt16LE(i));
     }
     console.log(fsrData);
-    if (!(this.index % 5)) {
-      EventRegister.emit('data', fsrData.toString());
+    if (!(this.index % 10)) {
+      EventRegister.emit('data', {sole: name, data: fsrData});
     }
     this.index++;
     return fsrData;

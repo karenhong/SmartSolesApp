@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Modal, Image, StyleSheet} from 'react-native';
+import {Modal, Image} from 'react-native';
 import {Icon} from 'native-base';
 import {Button, Container} from 'native-base';
 import {Row, Col} from 'react-native-easy-grid';
@@ -9,6 +9,10 @@ import SSColors from '../../styles/colors';
 import styles from '../../styles/soles-styles';
 
 export default class ExerciseModal extends Component {
+  onNewData = data => {
+    console.log(data);
+  };
+
   render() {
     return (
       <Modal
@@ -16,7 +20,7 @@ export default class ExerciseModal extends Component {
         transparent={false}
         visible={this.props.modalVisible}
         onRequestClose={() => {
-          this.props.setModalVisible(!this.props.modalVisible);
+          this.props.stop();
         }}>
         <Container>
           <Row style={{height: 55}}>
@@ -25,7 +29,7 @@ export default class ExerciseModal extends Component {
               light
               large
               onPress={() => {
-                this.props.setModalVisible(!this.props.modalVisible);
+                this.props.stop();
               }}>
               <Icon
                 style={[{color: SSColors.Gray}]}
@@ -46,7 +50,7 @@ export default class ExerciseModal extends Component {
               style={styles.backgroundVideo}
             />
           </Row>
-          <Row>
+          <Row style={{paddingTop: 20}}>
             <Col />
             <Col>
               <Container style={styles.leftSole}>
@@ -85,6 +89,7 @@ export default class ExerciseModal extends Component {
                 <Image
                   source={require('../../../resources/soles/right/bottom.png')}
                   style={styles.rbottom}
+                  tintColor="none"
                 />
               </Container>
             </Col>

@@ -2,7 +2,6 @@ import React from 'react';
 import {Alert, View, Text, TouchableOpacity} from 'react-native';
 import {H3} from 'native-base';
 import {Row, Grid, Col} from 'react-native-easy-grid';
-import {EventRegister} from 'react-native-event-listeners';
 import {Circle} from 'react-native-progress';
 
 import NetworkManager from '../../bluetooth/NetworkManager';
@@ -18,7 +17,7 @@ class HomePage extends React.Component {
     this.manager = this.props.deviceManager;
     this.networkManger = new NetworkManager();
     this.state = {
-      enabled: false,
+      enabled: true,
       showToast: false,
       buttonText: 'Start',
       balance: 0,
@@ -80,11 +79,10 @@ class HomePage extends React.Component {
             </View>
             <View style={SSStyles.center}>
               <TouchableOpacity
-                disabled={!this.state.enabled}
+                disabled={this.state.enabled}
                 zIndex={5}
                 onPress={() => {
                   if (this.manager.getStatus() === Status.READING) {
-                    EventRegister.removeEventListener(this.dataListener);
                     this.updateState({enabled: false});
                     this.manager.setStatus(Status.GETTING_BALANCE);
                   } else {

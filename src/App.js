@@ -116,6 +116,12 @@ class MainApp extends React.Component {
     });
   };
 
+  updateState = state => {
+    if (this._isMounted) {
+      this.setState(state);
+    }
+  };
+
   changeStatusToast = data => {
     let text = '';
     let type = 'default';
@@ -124,7 +130,6 @@ class MainApp extends React.Component {
       case Status.CONNECTED:
         type = 'success';
         text = 'Connected to Smart Soles';
-        this.updateState({enabled: true});
         this.updateState({connected: true});
         break;
       case Status.CONNECTING:
@@ -138,7 +143,6 @@ class MainApp extends React.Component {
       case Status.NOT_CONNECTED:
         type = 'danger';
         text = 'Lost connection to Smart Soles';
-        this.updateState({enabled: false});
         this.updateState({connected: false});
         break;
     }
